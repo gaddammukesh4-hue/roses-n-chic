@@ -30,8 +30,10 @@ export default function PrivacyPolicyPage() {
           <li>Order details: items purchased, order total, payment status.</li>
           <li>Measurements you choose to save for custom-tailored orders.</li>
           <li>
-            Basic page-visit records (page path and referring page only — no name, IP address, or
-            device identifier is stored) used to understand which pages are popular.
+            Page-visit records (page path and referring page). If you are signed in, these are
+            linked to your account so we know which products and pages you’ve looked at; if you
+            are browsing signed out, nothing about the visit identifies you — no IP address, no
+            device identifier, no tracking cookie.
           </li>
           <li>Your email address, if you sign up for our mailing list.</li>
         </ul>
@@ -47,14 +49,32 @@ export default function PrivacyPolicyPage() {
         <ul>
           <li>To process and ship your order.</li>
           <li>To let you sign in and see your order history and saved measurements.</li>
-          <li>To send you order updates and, if you opted in, occasional emails about new pieces.</li>
+          <li>
+            To send you order updates and, only if you’ve opted in (by creating an account or
+            joining our mailing list), occasional promotional emails about new pieces. If you’re
+            signed in, we may use what you’ve browsed on the site to make those emails more
+            relevant — for example, letting you know when something you looked at is back in
+            stock. We never use this to contact you if you haven’t opted in.
+          </li>
         </ul>
 
         <h2>Who we share it with</h2>
         <p>
-          Only the services needed to run the store: our database host (Supabase), our payment
-          processor (Razorpay), and, if you provide one, our shipping courier. We do not sell
-          your information to anyone.
+          <strong>We do not sell or share your personal information with any third party</strong>,
+          for marketing or any other purpose. The only outside parties involved at all are the
+          services strictly needed to run the store — our database host (Supabase), our payment
+          processor (Razorpay), and, if you provide one, our shipping courier — each of which only
+          ever sees the minimum needed to do its job (e.g. the courier sees a shipping address,
+          never your payment details). None of them may use your data for their own purposes.
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+          We use only the cookies needed to run the site: one to keep you signed in, and one to
+          remember your bag if you’re not signed in. We do not use advertising or third-party
+          tracking cookies, and we do not use cookies to identify you while signed out. The
+          page-visit linkage described above happens through your account session, not a separate
+          tracking cookie.
         </p>
 
         <h2>Your rights</h2>

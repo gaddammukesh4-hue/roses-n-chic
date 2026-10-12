@@ -38,6 +38,35 @@ Update this file at the end of every phase.
 ## Notes
 (Write decisions and open problems here.)
 
+- 2026-10-13: Built the "who viewed what" per-visitor analytics the user
+  asked for, after confirming the trade-off against the privacy policy's
+  existing no-identification promise -- user explicitly said to rewrite
+  the policy and asked for a cookie notice too. Privacy policy
+  (app/policies/privacy/page.tsx) rewritten: page views are now linked to
+  the account for signed-in visitors (still fully anonymous when signed
+  out), explicit "we do not sell or share with any third party" language,
+  and a new Cookies section (functional cookies only -- auth session,
+  guest cart -- no ad/tracking cookies). Added components/CookieNotice.tsx,
+  a dismissible informational banner (not a blocking consent gate, since
+  no non-essential cookies are used) in the root layout. Migration
+  20261012000012 adds `page_views.user_id` (nullable, set null on user
+  delete); app/actions/analytics.ts's `logPageView` now records the
+  signed-in user's id from the server session (never client input, so it
+  can't be spoofed); /admin/analytics has a new "Who viewed what" table
+  (customer name/email + page + timestamp, signed-in visits only).
+  **Known unresolved oddity**: local dev server (`next start` on
+  Windows/localhost) did not reliably show the auth cookie reaching this
+  specific server action in Playwright testing, even though the exact
+  same cookie was confirmed present in the browser and other direct
+  (non-form) server actions in this app (e.g. signOut) demonstrably do see
+  it. Spent real effort tracing this (raw cookie dump inside the action
+  itself came back empty) without finding a root cause -- most likely a
+  localhost/dual-stack or Next.js dev-server quirk rather than an app bug,
+  but not confirmed either way. Shipped anyway and verified directly
+  against the LIVE Vercel deployment instead of localhost, since that's
+  what actually matters; if it's ever reported as not working in
+  production specifically (not just local dev), revisit this.
+
 - 2026-10-13: Google sign-in (Phase 6, previously deferred) -- **done and
   verified live.** components/AuthDrawer.tsx has a "Continue with Google"
   button (both sign-in and create-account views) using the browser

@@ -4,6 +4,7 @@ import './globals.css';
 import '@/styles/nav.css';
 import CartProvider from '@/components/CartProvider';
 import PageViewBeacon from '@/components/PageViewBeacon';
+import CookieNotice from '@/components/CookieNotice';
 
 const serif = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-serif', display: 'swap' });
 const sans = Montserrat({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-sans', display: 'swap' });
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <PageViewBeacon />
         <CartProvider>{children}</CartProvider>
+        <CookieNotice />
       </body>
     </html>
   );
