@@ -10,7 +10,7 @@ Update this file at the end of every phase.
 - [x] Phase 5: Catalog and product pages. Verified against the live database on 2026-10-12: /collections renders all 5 active products with real fabric/price/filters, /collections/[slug] renders the full size matrix, fabric/care notes, and JSON-LD. Deferred on purpose, not half-built: the video-badge/hover-reel/fullscreen-reel behavior (steps 3-5) has no media to work with yet (no product photography or reels exist, only the hero's own frames); "Custom Tailored" sizing (step 8) needs Phase 6 auth first. "Add to bag" is a visibly disabled button, not a fake-functional one -- Phase 7 wires it up. Found and fixed a real bug along the way: Nav had no styles of its own and only rendered correctly on the homepage (the only page that happened to also load hero.css) -- extracted nav.css as a globally-loaded shared file so Nav works on every page.
 - [~] Phase 6: Accounts. Built and verified end-to-end against the live project (2026-10-12): slide-out frosted-glass Sign In / Create Account drawer (components/AuthDrawer.tsx, reusing the Phase 1 --glass-drawer-* tokens for the first time), email/password auth via Server Actions (app/actions/auth.ts), /auth/callback route for email-confirmation and password-recovery links, /account/reset-password, and the account page with a working save/remove measurements flow (app/actions/measurements.ts). Verified live: sign up (admin-confirmed test users, since Supabase's public signup endpoint blocks `@example.com` and the project's default email rate limit is 2/hour), sign in, Nav flips Sign-in <-> Account/Sign-out correctly, measurement save+display+remove, sign out, and RLS (profiles/measurements insert-own policies) all confirmed against the real database. Deferred: Google sign-in (needs Google Cloud OAuth credentials -- a user action, not started), guest-cart merge (no cart exists until Phase 7).
 - [x] Phase 7: Cart and checkout (Razorpay). Payment wired up and verified live (2026-10-12): createOrder (app/actions/checkout.ts) re-reads prices/stock from the DB server-side and creates a real Razorpay test-mode order; CheckoutButton loads the real Razorpay Checkout widget (confirmed Test Mode banner, correct price, real iframe to api.razorpay.com); confirmPayment verifies the HMAC signature and calls the new fulfill_order Postgres function (migration 20261012000005), which atomically marks the order paid and decrements stock in one transaction; the webhook (app/api/webhooks/razorpay/route.ts) is the authoritative confirmation, independent of whether the client-side callback ever fires. All verified directly against the live database and a real signed webhook payload, not just by reading the code: stock decrements correctly (4->3), the RPC is idempotent (second call on a paid order is a no-op, verified via raw REST), oversell protection works (artificially zeroed stock -> RPC raises and rolls back, order stays pending), the webhook accepts a correctly HMAC-signed payload and rejects a tampered one (400), and a duplicate webhook delivery is detected and ignored via the event_id hash of the raw body. Stripe (international/USD) not started -- Razorpay covers India/UPI/cards for now. /account's Orders section now shows real order history.
-- [ ] Phase 8: Admin panel
+- [~] Phase 8: Admin panel. Built, mostly verified live (2026-10-12), paused mid-session with one known bug and test data not yet cleaned up -- see Notes below for exactly what to pick up. /admin (layout-gated on profiles.is_admin, confirmed both directions: a non-admin signed-in user is redirected home, an admin reaches it) has Products (list/create/edit, sizes+stock via upsertVariant, reel URL field) and Orders (status + tracking number) screens. All admin writes use the regular RLS-bound client, not the service-role one -- RLS's existing admin policies ARE the authorization, same principle as Phase 7. Every admin mutation logs to the new admin_audit_log table (migration 20261012000007) -- confirmed working: create_product and upsert_variant entries appeared correctly with right metadata. Product creation and stock editing verified live end-to-end. Image upload (signed-URL flow, components/admin/ImageUploader.tsx) did NOT work in the one live test run -- getProductImageUploadUrl ran server-side (~1s, logged, no error), but no product_media row appeared after. Not yet root-caused.
 - [ ] Phase 9: Marketing, SEO, content
 - [ ] Phase 10: Security review
 - [ ] Phase 11: Quality and speed
@@ -18,6 +18,17 @@ Update this file at the end of every phase.
 
 ## Notes
 (Write decisions and open problems here.)
+
+- 2026-10-12: Paused Phase 8 mid-session (low context budget) with test
+  data still in the live database, not yet cleaned up:
+  - auth user `rnc-admin-test@gmail.com` (is_admin=true manually)
+  - auth user `rnc-nonadmin-test@gmail.com`
+  - product id `c6dfeeaa-846c-42ba-a0c1-fd2e3f864671` ("Admin Test Dress",
+    slug `admin-test-dress`, draft, one variant M=7 stock) and its
+    admin_audit_log rows
+  Delete all of the above (admin API for the two users, REST for the
+  product + its variant/audit rows) once Phase 8 wraps up, same pattern
+  as every other phase's test cleanup in this file.
 
 - 2026-10-12: Product photo pipeline built (fills in the gap Phase 5 left
   deliberately open). `product-media` Storage bucket (public, 10MB/file,
