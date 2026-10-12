@@ -42,6 +42,36 @@ Supabase project to exist. It only needs one to actually *run*.
    (after signing up once Phase 6 adds auth) and set `is_admin = true` by
    hand — there's no self-serve admin signup, on purpose.
 
+## Uploading product photos
+
+The `product-media` Storage bucket exists (public, created 2026-10-12,
+10MB/file limit, jpeg/png/webp only) and `product_media` has RLS matching
+every other admin-write table. You upload the files yourself through the
+Supabase dashboard; I match them to products afterward with a script.
+
+1. In the Supabase dashboard, go to **Storage → product-media**.
+2. For each product, **create a folder named exactly after its slug**:
+   `the-muse-wrap-dress`, `the-needle-blouse`, `glow-up-maxi`,
+   `chennai-atelier-kurta`, `petal-sleeve-top`, `ivory-rose-saree`
+   (the full current list is `select slug, name from products`).
+3. Inside each folder, upload that product's photos named so they sort in
+   the order you want them shown — `01.jpg`, `02.jpg`, etc. The first file
+   alphabetically becomes the cover image everywhere (catalog grid and the
+   product page's gallery).
+4. Tell me when you're done (or just do it any time — I can run the sync
+   whenever) and I'll run:
+   ```bash
+   node --env-file=.env.local scripts/sync-product-media.mjs
+   ```
+   This replaces each matched product's `product_media` rows with the
+   current folder contents -- safe to re-run after adding or swapping
+   photos later. A folder whose name doesn't match any product's slug is
+   skipped and reported, not silently ignored.
+
+Until a product has at least one photo, the catalog shows a brand-gradient
+placeholder with the product's initial instead of a broken image -- nothing
+breaks in the meantime.
+
 ## Verifying Phase 4's "Done when" criterion
 
 Plan.md: "you can add a product in the database and it shows on the site. A

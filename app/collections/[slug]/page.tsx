@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import CurrencyToggle from '@/components/CurrencyToggle';
 import AddToBag from '@/components/AddToBag';
+import ProductGallery from '@/components/ProductGallery';
 import { getProductBySlug, hasSupabaseConfig, formatPrice } from '@/lib/catalog';
 import { getCurrency } from '@/app/actions/currency';
 
@@ -47,12 +48,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Nav />
       <main className="pt-[calc(var(--nav-h,76px)+40px)] pb-24 px-6 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* No product photography yet -- see ProductCard.tsx for why. */}
-        <div className="aspect-[4/5] rounded-md bg-gradient-to-br from-blush to-champagne flex items-center justify-center">
-          <span className="text-display font-serif text-white/70" aria-hidden="true">
-            {product.name.charAt(0)}
-          </span>
-        </div>
+        <ProductGallery media={product.product_media} productName={product.name} />
 
         <div className="space-y-6">
           <div>

@@ -22,9 +22,10 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Product
   const supabase = await createClient();
   let query = supabase
     .from('products')
-    .select('id, slug, name, description, fabric, fabric_notes, care_notes, price_inr, price_usd, status, product_variants(id, size, stock_count)')
+    .select('id, slug, name, description, fabric, fabric_notes, care_notes, price_inr, price_usd, status, product_variants(id, size, stock_count), product_media(id, image_url, reel_video_url, sort_order)')
     .eq('status', 'active')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .order('sort_order', { referencedTable: 'product_media', ascending: true });
 
   if (filters.fabric) query = query.eq('fabric', filters.fabric);
   if (filters.priceRange) {
@@ -49,9 +50,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('products')
-    .select('id, slug, name, description, fabric, fabric_notes, care_notes, price_inr, price_usd, status, product_variants(id, size, stock_count)')
+    .select('id, slug, name, description, fabric, fabric_notes, care_notes, price_inr, price_usd, status, product_variants(id, size, stock_count), product_media(id, image_url, reel_video_url, sort_order)')
     .eq('slug', slug)
     .eq('status', 'active')
+    .order('sort_order', { referencedTable: 'product_media', ascending: true })
     .maybeSingle();
 
   if (error) throw new Error(`Failed to load product "${slug}": ${error.message}`);

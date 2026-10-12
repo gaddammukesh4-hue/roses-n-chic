@@ -2,7 +2,7 @@
 
 Update this file at the end of every phase.
 
-- [~] Phase 0: Set up. Done: git repo initialized, Next.js app scaffolded (TypeScript, App Router, Tailwind) in the project root, gsap/lenis/zod installed, dev server smoke-tested on localhost:3000. Supabase `rnc-dev` project created and linked, `.env.local` filled in (2026-10-12). All four recommended plan.md A3 skills installed (2026-10-12): ui-ux-pro-max, vercel-labs/agent-skills, supabase/agent-skills, owasp-security. Still not done: GitHub repo + push, Vercel link, Razorpay/Stripe test keys.
+- [~] Phase 0: Set up. Done: git repo initialized and pushed to GitHub (gaddammukesh4-hue/roses-n-chic, 2026-10-12, secret scanning + push protection on), Next.js app scaffolded (TypeScript, App Router, Tailwind) in the project root, gsap/lenis/zod installed, dev server smoke-tested on localhost:3000. Supabase `rnc-dev` project created and linked, `.env.local` filled in. Razorpay test keys in `.env.local` (2026-10-12, see Phase 7). All four recommended plan.md A3 skills installed: ui-ux-pro-max, vercel-labs/agent-skills, supabase/agent-skills, owasp-security. Still not done: Vercel link, Stripe keys.
 - [x] Phase 1: Brand and design system. DESIGN.md written (colors with computed WCAG contrast table, type scale, radius, shadows, frosted-glass tokens, button states, logo usage). Tokens wired into app/globals.css as Tailwind @theme. Logo files made: public/logo.svg, public/logo-light.svg, app/icon.svg (favicon). Live demo at /design-system (buttons, headings, cards, logo). Used the ui-ux-pro-max skill for spacing/button/glassmorphism UX guidance, but NOT its generic color-palette match (it returned a dark+gold "Liquid Glass" direction that contradicts CLAUDE.md's "no dark backgrounds" rule) — colors come from the palette already proven live in hero.css instead. Found and fixed a real WCAG AA failure along the way: the hero's "Explore" button hover state was white-on-champagne (2.35:1); changed to white-on-rose-mid (5.57:1) in all 4 copies of hero.css.
 - [x] Phase 2: Hero video assets (done: frames and cut-out in hero/standalone/frames)
 - [x] Phase 3: Hero scroll animation. Integrated into the live Next.js app on 2026-10-12: components/lib/styles copied in, frames copied to public/hero/frames, app/layout.tsx and app/page.tsx wired to Nav+HeroScrub, conflicting default body styles removed from globals.css. Verified with Playwright at 1440x810 and 390x844 (real device sizes, not the browser's default window) — 0 console/page errors, full scroll sequence renders correctly at both sizes, mobile dock position and logo fade match hero/README.md.
@@ -18,6 +18,21 @@ Update this file at the end of every phase.
 
 ## Notes
 (Write decisions and open problems here.)
+
+- 2026-10-12: Product photo pipeline built (fills in the gap Phase 5 left
+  deliberately open). `product-media` Storage bucket (public, 10MB/file,
+  jpeg/png/webp) with RLS matching every other admin-write table
+  (migration 20261012000006). Catalog and product-detail pages now
+  display real images via next/image when product_media has rows, and
+  fall back to the existing brand-gradient placeholder otherwise -- no
+  broken-image states either way. You upload photos yourself through the
+  Supabase dashboard (one folder per product, named by slug -- see
+  supabase/README.md for the exact steps and current slug list); I run
+  `scripts/sync-product-media.mjs` to match folders to products afterward,
+  safe to re-run any time photos change. Verified the whole pipeline
+  end-to-end with a real uploaded test file (storage upload -> sync
+  script -> product_media row -> real rendered image in the catalog),
+  then cleaned the test artifact up.
 
 - 2026-10-12: During Razorpay testing, hit a real race condition in
   CheckoutButton (not just a test artifact, though it showed up as one

@@ -17,6 +17,13 @@ export type ProductVariant = {
   stock_count: number;
 };
 
+export type ProductMedia = {
+  id: string;
+  image_url: string | null;
+  reel_video_url: string | null;
+  sort_order: number;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -29,6 +36,7 @@ export type Product = {
   price_usd: number;
   status: 'draft' | 'active' | 'archived';
   product_variants: ProductVariant[];
+  product_media: ProductMedia[];
 };
 
 export type CatalogFilters = {
