@@ -35,6 +35,8 @@ export default function ImageUploader({ productId, initialMedia }: { productId: 
         return;
       }
       window.location.reload();
+    } catch (e) {
+      setError((e as Error)?.message ?? 'Unknown upload error.');
     } finally {
       setUploading(false);
     }

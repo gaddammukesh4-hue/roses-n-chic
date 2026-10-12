@@ -1,0 +1,15 @@
+-- Roses N Chic: fix a real bug in 20261012000007_admin_audit_log.sql.
+--
+-- admin_id was declared `not null references auth.users(id) on delete set
+-- null` -- a direct contradiction. Deleting any admin user who had ever
+-- logged an action failed with a not-null constraint violation, which
+-- would also silently block deleting their auth.users row entirely
+-- (the whole DELETE transaction rolls back). Found live, while cleaning up
+-- test data after verifying Phase 8, not by inspection.
+--
+-- Fix: admin_id becomes nullable, matching what `on delete set null` was
+-- already trying to do. A log entry surviving its admin's deletion with
+-- admin_id = null ("someone did this, we no longer know who") is more
+-- useful than losing the audit trail entirely via cascade, and strictly
+-- better than the delete failing outright.
+alter table public.admin_audit_log alter column admin_id drop not null;

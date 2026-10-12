@@ -17,7 +17,8 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 | 5 Catalog and product pages | **Done.** Verified against real data. Reel/video and Custom Tailored deliberately deferred (no media yet, needs Phase 6 auth). |
 | 6 Accounts | **Done** (email/password). Verified live: sign up, sign in, measurements save/remove, sign out, RLS. Google sign-in deferred -- needs your Google Cloud OAuth credentials. |
 | 7 Cart and checkout | **Done** (Razorpay/INR). Order creation, signature verification, atomic stock decrement, and webhook all verified live. Stripe/USD not started. |
-| 8 to 12 | Not started. |
+| 8 Admin panel | **Done.** Products (create/edit/stock/photos/reel), orders (status/tracking), audit log -- all verified live. |
+| 9 to 12 | Not started. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
 
