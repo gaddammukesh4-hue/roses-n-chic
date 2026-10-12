@@ -18,11 +18,11 @@ export default function ReturnsPolicyPage() {
       <Nav />
       <PolicyLayout
         title="Returns policy"
-        lastUpdated="Last updated 13 October 2026. Draft placeholder — the return window and conditions below need business and legal sign-off before launch."
+        lastUpdated="Last updated 13 October 2026. The refund timeline below was reviewed with legal counsel. The rest of this page is still a draft pending formal sign-off."
       >
         <h2>Standard orders</h2>
         <p>
-          If a piece doesn't fit or isn't right, you may request a return within 7 days of
+          If a piece doesn’t fit or isn’t right, you may request a return within 7 days of
           delivery. The piece must be unworn, unwashed, and with its original tags attached.
         </p>
 
@@ -30,7 +30,7 @@ export default function ReturnsPolicyPage() {
         <p>
           Pieces cut to your own saved measurements are made specifically for you and cannot be
           returned for fit or preference reasons. If a custom piece arrives damaged or
-          significantly different from what you ordered, contact us and we'll make it right.
+          significantly different from what you ordered, contact us and we’ll make it right.
         </p>
 
         <h2>Damaged or incorrect items</h2>
@@ -55,14 +55,14 @@ export default function ReturnsPolicyPage() {
           >
             @rosesnchic <span className="sr-only">(opens in a new tab)</span>
           </a>
-          , with your order number. We'll confirm the next steps.
+          , with your order number. We’ll confirm the next steps.
         </p>
 
         <h2>Refunds</h2>
         <p>
-          Approved refunds are issued to your original payment method within 7 business days of
-          us receiving and checking the returned piece. Your bank or payment provider may take a
-          few additional days to show the credit.
+          Approved refunds are issued to your original payment method within 12-15 working days
+          of us receiving and checking the returned piece — this window allows for your bank or
+          payment provider’s own processing time.
         </p>
       </PolicyLayout>
       <Footer />

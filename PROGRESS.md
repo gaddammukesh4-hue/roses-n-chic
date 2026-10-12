@@ -38,6 +38,35 @@ Update this file at the end of every phase.
 ## Notes
 (Write decisions and open problems here.)
 
+- 2026-10-13: Google sign-in (Phase 6, previously deferred) -- app side is
+  fully built: components/AuthDrawer.tsx has a "Continue with Google"
+  button (both sign-in and create-account views) using the browser
+  Supabase client's `signInWithOAuth`, redirecting through the existing
+  app/auth/callback/route.ts (already written generically enough to
+  handle this, per its own comment -- no changes needed there). **Not yet
+  functional** -- needs Google Cloud OAuth credentials (Client ID +
+  Secret) from the user, then enabling the Google provider in Supabase
+  Auth settings with those values. Nothing else left to build once those
+  two values exist.
+- 2026-10-13: User had the policy pages reviewed by an actual lawyer (not
+  me) -- their guidance: refund timeline should be 12-15 working days, not
+  a shorter window, "for safer side." Updated app/policies/returns/page.tsx
+  accordingly and adjusted its lastUpdated disclaimer to reflect that this
+  specific detail has real legal sign-off, while being careful not to
+  claim the same for the other three policy pages or the rest of the
+  returns page, since only the refund timing was specifically mentioned.
+- 2026-10-13: User asked for an additional hero animation (a needle
+  visibly stitching through cloth, prepended before the existing "Needle"
+  chapter) to reinforce "hand-stitched, not mass manufactured." Told them
+  plainly that generating new video/frame content is outside what this
+  agent can do (no video-generation tool available) -- the original hero
+  frames came from the user's own AI video tool + ffmpeg (plan.md Phase
+  2), not from Claude Code. Offered the same path for this addition: they
+  generate new footage (same reference image for consistency) and hand
+  over frames; I handle all the integration into hero-engine.js (frame
+  count, new chapter entry, retimed easing, mobile perf re-check). Not
+  started -- waiting on footage from the user.
+
 - 2026-10-13: User reported sign-in, the hero's Explore button, and nav
   links all "not working" on their phone's Safari. Investigated live with
   Playwright's real WebKit engine (Safari's actual rendering engine, not
