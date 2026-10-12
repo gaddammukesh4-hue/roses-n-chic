@@ -3,7 +3,7 @@ import Nav from '@/components/Nav';
 import MeasurementForm from '@/components/MeasurementForm';
 import DeleteMeasurementButton from '@/components/DeleteMeasurementButton';
 import { createClient } from '@/lib/supabase/server';
-import { hasSupabaseConfig } from '@/lib/catalog';
+import { hasSupabaseConfig, formatPrice } from '@/lib/catalog';
 
 export const metadata: Metadata = { title: 'Account | Roses N Chic' };
 
@@ -14,6 +14,15 @@ type Measurement = {
   created_at: string;
 };
 
+type Order = {
+  id: string;
+  status: string;
+  total: number;
+  currency: 'INR' | 'USD';
+  created_at: string;
+  order_items: { product_name: string; size: string; quantity: number }[];
+};
+
 export default async function AccountPage() {
   const configured = hasSupabaseConfig();
   const supabase = configured ? await createClient() : null;
@@ -22,13 +31,20 @@ export default async function AccountPage() {
 
   let name: string | null = null;
   let measurements: Measurement[] = [];
+  let orders: Order[] = [];
   if (user && supabase) {
-    const [{ data: profile }, { data: measurementRows }] = await Promise.all([
+    const [{ data: profile }, { data: measurementRows }, { data: orderRows }] = await Promise.all([
       supabase.from('profiles').select('name').eq('id', user.id).maybeSingle(),
       supabase.from('measurements').select('id, label, data, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+      supabase
+        .from('orders')
+        .select('id, status, total, currency, created_at, order_items(product_name, size, quantity)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false }),
     ]);
     name = profile?.name ?? null;
     measurements = (measurementRows ?? []) as Measurement[];
+    orders = (orderRows ?? []) as unknown as Order[];
   }
 
   return (
@@ -68,14 +84,31 @@ export default async function AccountPage() {
               <MeasurementForm />
             </section>
 
-            <section className="space-y-2">
+            <section className="space-y-4">
               <h2 className="text-h3">Orders</h2>
-              <p className="text-body-sm text-muted-foreground">No orders yet — checkout ships in Phase 7.</p>
+              {orders.length === 0 ? (
+                <p className="text-body-sm text-muted-foreground">No orders yet.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {orders.map((order) => (
+                    <li key={order.id} className="rounded-md border border-border bg-card p-4 text-body-sm space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium capitalize">{order.status}</span>
+                        <span>{formatPrice(order.total, order.currency)}</span>
+                      </div>
+                      <p className="text-muted-foreground">
+                        {order.order_items.map((i) => `${i.product_name} (${i.size}) × ${i.quantity}`).join(', ')}
+                      </p>
+                      <p className="text-caption text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
 
             <section className="space-y-2">
               <h2 className="text-h3">Addresses</h2>
-              <p className="text-body-sm text-muted-foreground">Address book opens alongside checkout in Phase 7.</p>
+              <p className="text-body-sm text-muted-foreground">Address book is planned for a future update.</p>
             </section>
           </div>
         )}

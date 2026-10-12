@@ -9,7 +9,7 @@ Update this file at the end of every phase.
 - [x] Phase 4: Database. Applied to the live `rnc-dev` project on 2026-10-12 (`supabase link` + `supabase db push`, all 4 migrations). Seed data loaded (6 products, 30 variants). RLS verified two ways: through the app (draft product 404s, active products list correctly), and independently via raw REST calls with the anon key (`/rest/v1/products` returns only the 5 active rows; `/rest/v1/measurements` returns `[]` with no auth) -- the Phase 4 "done when" criterion is genuinely confirmed, not just true by construction.
 - [x] Phase 5: Catalog and product pages. Verified against the live database on 2026-10-12: /collections renders all 5 active products with real fabric/price/filters, /collections/[slug] renders the full size matrix, fabric/care notes, and JSON-LD. Deferred on purpose, not half-built: the video-badge/hover-reel/fullscreen-reel behavior (steps 3-5) has no media to work with yet (no product photography or reels exist, only the hero's own frames); "Custom Tailored" sizing (step 8) needs Phase 6 auth first. "Add to bag" is a visibly disabled button, not a fake-functional one -- Phase 7 wires it up. Found and fixed a real bug along the way: Nav had no styles of its own and only rendered correctly on the homepage (the only page that happened to also load hero.css) -- extracted nav.css as a globally-loaded shared file so Nav works on every page.
 - [~] Phase 6: Accounts. Built and verified end-to-end against the live project (2026-10-12): slide-out frosted-glass Sign In / Create Account drawer (components/AuthDrawer.tsx, reusing the Phase 1 --glass-drawer-* tokens for the first time), email/password auth via Server Actions (app/actions/auth.ts), /auth/callback route for email-confirmation and password-recovery links, /account/reset-password, and the account page with a working save/remove measurements flow (app/actions/measurements.ts). Verified live: sign up (admin-confirmed test users, since Supabase's public signup endpoint blocks `@example.com` and the project's default email rate limit is 2/hour), sign in, Nav flips Sign-in <-> Account/Sign-out correctly, measurement save+display+remove, sign out, and RLS (profiles/measurements insert-own policies) all confirmed against the real database. Deferred: Google sign-in (needs Google Cloud OAuth credentials -- a user action, not started), guest-cart merge (no cart exists until Phase 7).
-- [~] Phase 7: Cart and checkout. Cart is done and verified live (2026-10-12): frosted-glass cart drawer (components/CartDrawer.tsx), guest cart in localStorage, signed-in cart in the database (app/actions/cart.ts, bound by Phase 4's RLS), automatic merge of guest items into the DB cart right after sign-in, quantity controls capped at live stock, and a /checkout review page. Payment (order creation, Razorpay/Stripe, webhook) not started -- needs your Razorpay test-mode keys first, since order creation and payment verification are meant to happen together per plan.md's security model, not as two separate half-built pieces.
+- [x] Phase 7: Cart and checkout (Razorpay). Payment wired up and verified live (2026-10-12): createOrder (app/actions/checkout.ts) re-reads prices/stock from the DB server-side and creates a real Razorpay test-mode order; CheckoutButton loads the real Razorpay Checkout widget (confirmed Test Mode banner, correct price, real iframe to api.razorpay.com); confirmPayment verifies the HMAC signature and calls the new fulfill_order Postgres function (migration 20261012000005), which atomically marks the order paid and decrements stock in one transaction; the webhook (app/api/webhooks/razorpay/route.ts) is the authoritative confirmation, independent of whether the client-side callback ever fires. All verified directly against the live database and a real signed webhook payload, not just by reading the code: stock decrements correctly (4->3), the RPC is idempotent (second call on a paid order is a no-op, verified via raw REST), oversell protection works (artificially zeroed stock -> RPC raises and rolls back, order stays pending), the webhook accepts a correctly HMAC-signed payload and rejects a tampered one (400), and a duplicate webhook delivery is detected and ignored via the event_id hash of the raw body. Stripe (international/USD) not started -- Razorpay covers India/UPI/cards for now. /account's Orders section now shows real order history.
 - [ ] Phase 8: Admin panel
 - [ ] Phase 9: Marketing, SEO, content
 - [ ] Phase 10: Security review
@@ -18,6 +18,30 @@ Update this file at the end of every phase.
 
 ## Notes
 (Write decisions and open problems here.)
+
+- 2026-10-12: During Razorpay testing, hit a real race condition in
+  CheckoutButton (not just a test artifact, though it showed up as one
+  first): next/script's onReady fires via React state, which updates
+  asynchronously -- a click that lands right as the external script
+  finishes loading can read a stale `scriptReady=false` even though
+  `window.Razorpay` the actual global is already set, producing a false
+  "payment widget still loading" error. Fixed by polling `window.Razorpay`
+  directly instead of trusting the onReady-derived state flag alone.
+  Found by adding temporary debug logging and tracing actual execution
+  order, not by inspection -- the first few "it's stuck" results were
+  genuinely confusing until the logs showed createOrder() completing
+  successfully server-side every time, which narrowed it to the client.
+- 2026-10-12: Did not attempt to fully automate submitting a test card
+  through Razorpay's own Checkout iframe (third-party UI outside this
+  codebase, with its own React app, contact-verification step, and DOM
+  structure not worth hard-coding against). Instead verified the actual
+  security-critical code directly against the live database and a real
+  signed HTTP request: the fulfill_order RPC (idempotency, oversell
+  protection) and the webhook route (signature acceptance/rejection,
+  duplicate-event detection) -- see Phase 7 entry above for the specific
+  checks. This covers what the integration is actually responsible for
+  getting right; Razorpay's own widget rendering correctly (Test Mode
+  banner, correct price, real API calls) was confirmed visually.
 
 - 2026-10-12: Ran an OWASP-skill-guided security pass over every Server
   Action (app/actions/auth.ts, cart.ts, measurements.ts). All of them use

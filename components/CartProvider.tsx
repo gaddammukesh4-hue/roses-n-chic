@@ -22,6 +22,10 @@ type CartContextValue = {
   syncAfterSignIn: () => Promise<void>;
   /** Call right after sign-out: switches back to reading the guest cart. */
   syncAfterSignOut: () => void;
+  /** Call right after a successful checkout: the server already cleared
+   * the DB cart (app/actions/checkout.ts confirmPayment), this just
+   * re-fetches so the client reflects that. */
+  refresh: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -101,10 +105,14 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     setItems(readGuestCart());
   }
 
+  async function refresh() {
+    setItems(signedIn ? await getCart() : readGuestCart());
+  }
+
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, itemCount, loading, addItem, updateQuantity, removeItem, syncAfterSignIn, syncAfterSignOut }}>
+    <CartContext.Provider value={{ items, itemCount, loading, addItem, updateQuantity, removeItem, syncAfterSignIn, syncAfterSignOut, refresh }}>
       {children}
     </CartContext.Provider>
   );

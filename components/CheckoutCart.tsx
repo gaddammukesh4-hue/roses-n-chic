@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useCart } from '@/components/CartProvider';
 import { formatPrice } from '@/lib/catalog-types';
+import CheckoutButton from '@/components/CheckoutButton';
 
 export default function CheckoutCart() {
-  const { items } = useCart();
+  const { items, refresh } = useCart();
   const subtotalInr = items.reduce((sum, i) => sum + i.priceInr * i.quantity, 0);
 
   if (items.length === 0) {
@@ -30,9 +31,7 @@ export default function CheckoutCart() {
         <span>Subtotal</span>
         <span>{formatPrice(subtotalInr, 'INR')}</span>
       </div>
-      <div className="rounded-md border border-border bg-card p-6 text-body-sm text-muted-foreground">
-        Payment is being set up. This page will let you pay by card, UPI, or net banking once it&apos;s ready.
-      </div>
+      <CheckoutButton onSuccess={refresh} />
     </>
   );
 }
