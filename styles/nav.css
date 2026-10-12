@@ -25,13 +25,27 @@
   color: var(--color-rose-mid);
 }
 .nav__links { display: flex; gap: clamp(20px, 3vw, 44px); margin-right: auto; margin-left: clamp(24px, 4vw, 64px); }
-.nav__tools { display: flex; gap: clamp(18px, 2.4vw, 36px); }
+.nav__tools { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 36px); }
 .nav a:not(.nav__logo) { transition: color var(--duration-base); }
 .nav a:not(.nav__logo):hover { color: var(--color-champagne); }
+
+/* Mobile menu (Collections/Atelier) -- hidden on desktop, where .nav__links
+   already shows them inline. */
+.nav__mobile-menu { display: none; position: relative; }
+.nav__mobile-toggle { background: none; border: none; font-size: 18px; line-height: 1; color: var(--color-rose-ink); cursor: pointer; padding: 4px; }
+.nav__mobile-panel {
+  position: absolute; top: calc(100% + 1px); left: calc(-1 * clamp(20px, 3.5vw, 56px)); right: -100vw;
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 20px clamp(20px, 3.5vw, 56px) 24px;
+  background: var(--glass-nav-bg);
+  backdrop-filter: blur(var(--glass-nav-blur)); -webkit-backdrop-filter: blur(var(--glass-nav-blur));
+  border-bottom: var(--glass-border);
+}
 
 @media (max-width: 768px) {
   :root { --nav-h: 60px; }
   .nav { font-size: 11px; }
   .nav__logo { font-size: 25px; }
   .nav__links, .nav__tools a:nth-child(2) { display: none; }
+  .nav__mobile-menu { display: block; }
 }

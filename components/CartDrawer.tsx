@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/CartProvider';
 import { formatPrice, type Currency } from '@/lib/catalog-types';
+import ClientPortal from '@/components/ClientPortal';
 
 export default function CartDrawer({ open, onClose, currency }: { open: boolean; onClose: () => void; currency: Currency }) {
   const { items, loading, updateQuantity, removeItem } = useCart();
@@ -18,6 +19,7 @@ export default function CartDrawer({ open, onClose, currency }: { open: boolean;
   const subtotal = items.reduce((sum, i) => sum + (currency === 'INR' ? i.priceInr : i.priceUsd) * i.quantity, 0);
 
   return (
+    <ClientPortal>
     <div
       aria-hidden={!open}
       inert={!open}
@@ -92,5 +94,6 @@ export default function CartDrawer({ open, onClose, currency }: { open: boolean;
         )}
       </div>
     </div>
+    </ClientPortal>
   );
 }

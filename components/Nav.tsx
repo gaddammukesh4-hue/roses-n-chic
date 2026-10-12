@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { hasSupabaseConfig } from '@/lib/catalog';
 import AuthControl from '@/components/AuthControl';
 import CartControl from '@/components/CartControl';
+import MobileNavMenu from '@/components/MobileNavMenu';
 import { getCurrency } from '@/app/actions/currency';
 
 export default async function Nav() {
@@ -22,6 +23,7 @@ export default async function Nav() {
         <Link href="/atelier">Atelier</Link>
       </nav>
       <div className="nav__tools">
+        <MobileNavMenu />
         <AuthControl signedIn={signedIn} />
         <CartControl currency={currency} />
       </div>

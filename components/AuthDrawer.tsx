@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signUp, requestPasswordReset } from '@/app/actions/auth';
 import { initialAuthState } from '@/lib/auth-types';
+import ClientPortal from '@/components/ClientPortal';
 
 type View = 'sign-in' | 'create-account' | 'forgot-password';
 
@@ -29,35 +30,37 @@ export default function AuthDrawer({ open, onClose }: { open: boolean; onClose: 
   }
 
   return (
-    <div
-      aria-hidden={!open}
-      inert={!open}
-      className={`fixed inset-0 z-[60] transition-opacity duration-base ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
-    >
-      <button
-        type="button"
-        aria-label="Close"
-        onClick={onClose}
-        className="absolute inset-0 bg-rose-ink/30 cursor-pointer"
-      />
+    <ClientPortal>
       <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={view === 'sign-in' ? 'Sign in' : view === 'create-account' ? 'Create account' : 'Reset password'}
-        className={`absolute right-0 top-0 h-full w-full max-w-md p-8 overflow-y-auto border-l border-border shadow-lg transition-transform duration-base ${open ? 'translate-x-0' : 'translate-x-full'}`}
-        style={{ background: 'var(--glass-drawer-bg)', backdropFilter: 'blur(var(--glass-drawer-blur))', WebkitBackdropFilter: 'blur(var(--glass-drawer-blur))' }}
+        aria-hidden={!open}
+        inert={!open}
+        className={`fixed inset-0 z-[60] transition-opacity duration-base ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
       >
-        <button type="button" onClick={onClose} aria-label="Close" className="absolute right-6 top-6 text-h3 leading-none cursor-pointer">
-          &times;
-        </button>
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="absolute inset-0 bg-rose-ink/30 cursor-pointer"
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={view === 'sign-in' ? 'Sign in' : view === 'create-account' ? 'Create account' : 'Reset password'}
+          className={`absolute right-0 top-0 h-full w-full max-w-md p-8 overflow-y-auto border-l border-border shadow-lg transition-transform duration-base ${open ? 'translate-x-0' : 'translate-x-full'}`}
+          style={{ background: 'var(--glass-drawer-bg)', backdropFilter: 'blur(var(--glass-drawer-blur))', WebkitBackdropFilter: 'blur(var(--glass-drawer-blur))' }}
+        >
+          <button type="button" onClick={onClose} aria-label="Close" className="absolute right-6 top-6 text-h3 leading-none cursor-pointer">
+            &times;
+          </button>
 
-        <div className="pt-12">
-          {view === 'sign-in' && <SignInForm onSignedIn={handleSignedIn} onForgot={() => setView('forgot-password')} onCreateAccount={() => setView('create-account')} />}
-          {view === 'create-account' && <SignUpForm onSignedIn={handleSignedIn} onSignIn={() => setView('sign-in')} />}
-          {view === 'forgot-password' && <ForgotPasswordForm onBack={() => setView('sign-in')} />}
+          <div className="pt-12">
+            {view === 'sign-in' && <SignInForm onSignedIn={handleSignedIn} onForgot={() => setView('forgot-password')} onCreateAccount={() => setView('create-account')} />}
+            {view === 'create-account' && <SignUpForm onSignedIn={handleSignedIn} onSignIn={() => setView('sign-in')} />}
+            {view === 'forgot-password' && <ForgotPasswordForm onBack={() => setView('sign-in')} />}
+          </div>
         </div>
       </div>
-    </div>
+    </ClientPortal>
   );
 }
 

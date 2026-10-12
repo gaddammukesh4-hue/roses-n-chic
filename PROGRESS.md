@@ -38,6 +38,50 @@ Update this file at the end of every phase.
 ## Notes
 (Write decisions and open problems here.)
 
+- 2026-10-13: User reported sign-in, the hero's Explore button, and nav
+  links all "not working" on their phone's Safari. Investigated live with
+  Playwright's real WebKit engine (Safari's actual rendering engine, not
+  just a resized Chrome window) against the deployed site, and found two
+  distinct, confirmed real bugs plus one design question (not yet
+  resolved, see below):
+  1. **AuthDrawer/CartDrawer collapsed to 64px tall in Safari specifically**
+     (confirmed: 664px in Chrome, 64px in WebKit, same code, same page).
+     Root cause: both drawers live inside `<header class="nav">`, which has
+     `backdrop-filter` -- in WebKit, an ancestor with backdrop-filter
+     becomes the containing block for `position:fixed` descendants (Chrome
+     doesn't do this), so the drawers' "fixed inset-0" wrapper was
+     constrained to the 60px nav bar's own box instead of the viewport.
+     Fixed with components/ClientPortal.tsx (renders into document.body via
+     react-dom's createPortal, mounted post-hydration to avoid an SSR
+     mismatch), wrapping both drawers. Re-verified: 664px on both engines
+     now.
+  2. **Collections/Atelier had no path to them at all on mobile** (<=768px):
+     nav.css's `.nav__links { display: none }` media rule hid them with no
+     replacement -- not Safari-specific, present in Chrome mobile too, and
+     likely the real reason "Collections...anything" felt broken, since a
+     visitor can't even see the link to tap. Added components/
+     MobileNavMenu.tsx, a small hamburger toggle (mobile-only) that reveals
+     a dropdown with both links. Verified: toggle visible, panel link
+     visible and clickable, navigates to /collections, on both Chrome and
+     Safari mobile viewports.
+  3. **Not yet fixed, needs a decision, not obviously a bug**: the hero's
+     "Explore" button and tagline (`data-hero-late` elements in
+     hero-engine.js) have `pointer-events: none` and `opacity: 0` until
+     scroll progress passes ~84% (`cfg.scrubEnd`) -- confirmed via
+     getComputedStyle on a fresh page load with zero scroll, in BOTH
+     Chrome and Safari, so this is universal, not browser-specific. This
+     looks like a deliberate cinematic choice (the brand lockup + CTA only
+     completes once the model "docks" next to the logo at the end of the
+     640vh scroll sequence, matching chapter 4's name "Roses N Chic" in
+     cfg.chapters) rather than an accident -- but it means the hero's
+     primary CTA is unusable from the very first view, which is a real
+     usability cost regardless of original intent. Flagged to the user,
+     not changed without their input since it touches the hero's
+     carefully-tuned choreography from Phase 3.
+  All verified against the LIVE Vercel deployment first (to reproduce
+  exactly what the user saw), then against localhost after the fix, on
+  both webkit and chromium via Playwright -- not just code review.
+
 - 2026-10-12: Closed out the `npm audit` eslint-config-next finding (open
   since Phase 0) as a deliberate accepted risk rather than leaving it
   ambiguous. Re-checked: no stable eslint-config-next release newer than
