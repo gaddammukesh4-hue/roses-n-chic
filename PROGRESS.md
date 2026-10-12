@@ -38,16 +38,22 @@ Update this file at the end of every phase.
 ## Notes
 (Write decisions and open problems here.)
 
-- 2026-10-13: Google sign-in (Phase 6, previously deferred) -- app side is
-  fully built: components/AuthDrawer.tsx has a "Continue with Google"
+- 2026-10-13: Google sign-in (Phase 6, previously deferred) -- **done and
+  verified live.** components/AuthDrawer.tsx has a "Continue with Google"
   button (both sign-in and create-account views) using the browser
   Supabase client's `signInWithOAuth`, redirecting through the existing
   app/auth/callback/route.ts (already written generically enough to
-  handle this, per its own comment -- no changes needed there). **Not yet
-  functional** -- needs Google Cloud OAuth credentials (Client ID +
-  Secret) from the user, then enabling the Google provider in Supabase
-  Auth settings with those values. Nothing else left to build once those
-  two values exist.
+  handle this, per its own comment -- no changes needed there). User
+  created the Google Cloud OAuth client and gave me the Client ID +
+  Secret; enabled the provider directly via the Supabase Management API
+  (`PATCH /v1/projects/{ref}/config/auth`) using the existing CLI access
+  token, no dashboard clicking needed. Verified live against production:
+  clicking the button redirects to a real accounts.google.com screen with
+  the correct client_id and redirect_uri in the URL. One real limitation,
+  not a bug: the Google Cloud OAuth consent screen is in "Testing" mode by
+  default, so only email addresses explicitly added as test users in
+  Google Cloud Console can actually complete sign-in until the user
+  publishes the consent screen for public use -- told them this.
 - 2026-10-13: User had the policy pages reviewed by an actual lawyer (not
   me) -- their guidance: refund timeline should be 12-15 working days, not
   a shorter window, "for safer side." Updated app/policies/returns/page.tsx
