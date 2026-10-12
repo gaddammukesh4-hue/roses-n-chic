@@ -4,7 +4,7 @@ import { updateProduct } from '@/app/actions/admin-products';
 import ProductForm from '@/components/admin/ProductForm';
 import VariantEditor from '@/components/admin/VariantEditor';
 import ImageUploader from '@/components/admin/ImageUploader';
-import ReelUrlField from '@/components/admin/ReelUrlField';
+import ReelUploader from '@/components/admin/ReelUploader';
 
 type Params = Promise<{ id: string }>;
 
@@ -42,8 +42,8 @@ export default async function EditProductPage({ params }: { params: Params }) {
       </section>
 
       <section>
-        <h2 className="text-h3 mb-4">Reel video link</h2>
-        <ReelUrlField productId={product.id} initialUrl={reel} />
+        <h2 className="text-h3 mb-4">Reel video</h2>
+        <ReelUploader productId={product.id} initialUrl={reel} />
       </section>
     </div>
   );

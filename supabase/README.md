@@ -42,24 +42,27 @@ Supabase project to exist. It only needs one to actually *run*.
    (after signing up once Phase 6 adds auth) and set `is_admin = true` by
    hand — there's no self-serve admin signup, on purpose.
 
-## Adding real products and photos
+## Adding real products, photos, and videos
 
 As of 2026-10-12 the catalog is empty on purpose -- the 6 placeholder
 dresses used to test Phases 4-8 were removed once the admin panel (Phase 8)
 was verified working, so real inventory starts from a clean slate.
 
-**Primary path: the admin panel.** Sign in on the site, then visit
-`/admin/products/new`. Covers name/description/fabric/notes/prices/status,
-per-size stock, and photo upload (drag a file in on the product's edit
-page -- it uploads straight to Storage, no folder-naming needed). You need
-an admin account first: sign up normally through the site, then tell
-Claude your account's email so `profiles.is_admin` can be set to `true` --
-there's no self-serve admin signup, on purpose.
+**Primary path: the admin panel.** Sign in on the site (email/password or
+Google), then visit `/admin/products/new`. Covers
+name/description/fabric/notes/prices/status, per-size stock, photo upload,
+and reel video upload (an actual video file, MP4/WebM/MOV up to 50MB --
+or paste an external URL instead if you'd rather host it elsewhere) --
+both upload straight to Storage from the product's edit page, no
+folder-naming needed. You need an admin account first: sign up normally
+through the site, then tell Claude your account's email so
+`profiles.is_admin` can be set to `true` -- there's no self-serve admin
+signup, on purpose.
 
 **Alternative for bulk photo uploads:** the `product-media` Storage bucket
-(public, 10MB/file limit, jpeg/png/webp only) also accepts uploads directly
-through the Supabase dashboard if you'd rather add many photos at once
-outside the admin panel:
+(public, 50MB/file limit, jpeg/png/webp/mp4/webm/quicktime) also accepts
+uploads directly through the Supabase dashboard if you'd rather add many
+photos at once outside the admin panel:
 
 1. **Storage → product-media**, create a folder named exactly after the
    product's slug (`select slug, name from products` for the current list).

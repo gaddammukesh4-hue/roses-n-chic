@@ -110,9 +110,9 @@ export async function upsertVariant(productId: string, size: string, stockCount:
 /** Signed upload URL so the browser uploads the image file directly to
  * Storage, not through this server (plan.md: "Use signed upload links for
  * media"). File type/size are enforced by the bucket's own config
- * (product-media: jpeg/png/webp, 10MB max -- see supabase/README.md),
- * not re-validated here since Storage rejects anything outside that
- * itself. */
+ * (product-media: jpeg/png/webp/mp4/webm/quicktime, 50MB max -- the
+ * project plan's Storage cap), not re-validated here since Storage
+ * rejects anything outside that itself. */
 export async function getProductImageUploadUrl(productId: string, filename: string): Promise<{ error?: string; path?: string; token?: string }> {
   let supabase;
   try {
@@ -162,6 +162,30 @@ export async function deleteProductImage(mediaId: string, productId: string): Pr
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath('/collections');
   return {};
+}
+
+/** Same signed-upload pattern as getProductImageUploadUrl, for the reel
+ * video file. Type/size are enforced by the bucket's own config
+ * (product-media now also allows video/mp4, video/webm, video/quicktime,
+ * up to 50MB -- the project plan's own Storage upload cap, not a number
+ * chosen here). After a successful upload, the caller passes the
+ * resulting public URL to the existing updateReelUrl action -- the DB
+ * doesn't distinguish an uploaded file's URL from a pasted external one,
+ * so no separate "register" action is needed. */
+export async function getProductVideoUploadUrl(productId: string, filename: string): Promise<{ error?: string; path?: string; token?: string }> {
+  let supabase;
+  try {
+    ({ supabase } = await requireAdmin());
+  } catch (e) {
+    return { error: (e as Error).message };
+  }
+  if (!/^[a-zA-Z0-9._-]+$/.test(filename)) return { error: 'Invalid filename.' };
+
+  const path = `${productId}/reel-${Date.now()}-${filename}`;
+  const { data, error } = await supabase.storage.from('product-media').createSignedUploadUrl(path);
+  if (error) return { error: error.message };
+
+  return { path: data.path, token: data.token };
 }
 
 export async function updateReelUrl(productId: string, reelUrl: string): Promise<{ error?: string }> {

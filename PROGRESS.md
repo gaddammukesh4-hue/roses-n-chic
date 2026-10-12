@@ -61,6 +61,29 @@ Update this file at the end of every phase.
   specific detail has real legal sign-off, while being careful not to
   claim the same for the other three policy pages or the rest of the
   returns page, since only the refund timing was specifically mentioned.
+- 2026-10-13: Direct video file upload for product reels (user explicitly
+  asked for file upload, not just a URL field). Bucket `product-media`'s
+  config updated via the Storage Management API to also allow
+  video/mp4, video/webm, video/quicktime, and raised the per-file limit
+  from 10MB to 50MB (the project's own plan-level Storage cap -- 100MB was
+  rejected with a 413). New action `getProductVideoUploadUrl` (same
+  signed-upload pattern as the existing image uploader) in
+  app/actions/admin-products.ts; new components/admin/ReelUploader.tsx
+  replaces ReelUrlField.tsx (deleted, no longer used) -- file upload is
+  the primary path, with "paste a URL instead" still available as a
+  fallback for external hosting, both writing to the same
+  `updateReelUrl` action since the DB doesn't distinguish the two.
+  Verified three ways before calling it done: (1) raw Storage-layer test
+  confirming the bucket accepts video/mp4 and serves the correct
+  content-type back; (2) a full Playwright run through the REAL admin UI
+  -- created a temporary admin user, created a real product, uploaded an
+  actual file through the file input, confirmed the video player appears
+  with the uploaded content; (3) all test data (product, storage file,
+  admin user, audit log rows) cleaned up afterward.
+- 2026-10-13: Granted admin access to gaddammukesh8074@gmail.com (the
+  account that signed in via Google) via direct profiles.is_admin update
+  -- same mechanism as every other admin grant this project, just
+  triggered by a Google-authenticated account instead of email/password.
 - 2026-10-13: User asked for an additional hero animation (a needle
   visibly stitching through cloth, prepended before the existing "Needle"
   chapter) to reinforce "hand-stitched, not mass manufactured." Told them
