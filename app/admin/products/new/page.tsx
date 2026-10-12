@@ -6,7 +6,7 @@ export default function NewProductPage() {
     <div className="space-y-6">
       <h1 className="text-h1">New product</h1>
       <p className="text-body-sm text-muted-foreground">
-        Creates as a draft. Add sizes and photos from the product&apos;s edit page afterward, then switch status to Active.
+        Creates as a draft. You&apos;ll land on the product&apos;s edit page next to add sizes, photos, and a reel video, then switch status to Active.
       </p>
       <ProductForm action={createProduct} mode="create" />
     </div>

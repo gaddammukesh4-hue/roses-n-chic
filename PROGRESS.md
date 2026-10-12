@@ -80,6 +80,36 @@ Update this file at the end of every phase.
   actual file through the file input, confirmed the video player appears
   with the uploaded content; (3) all test data (product, storage file,
   admin user, audit log rows) cleaned up afterward.
+- 2026-10-13: Business name corrected back to "GM Innovations Private
+  Limited" (the earlier switch to "Aruna Apparals" was wrong -- user
+  confirmed GM Innovations is correct). Address stays as given
+  (Chinnamushidivada, Visakhapatnam).
+- 2026-10-13: Three more admin-panel gaps the user caught, all fixed:
+  1. **Product creation had no visible path to add photos/video.**
+     `/admin/products/new` only ever had the bare details form by design
+     (photos/video/sizes live on the edit page) -- but staying on that
+     page after creating looked like the feature didn't exist.
+     `createProduct` now redirects straight to the new product's edit
+     page on success.
+  2. **Admin orders showed no customer info** -- just items/total/status.
+     Added customer name/phone (via a new `profiles_select_admin` RLS
+     policy, migration 20261012000011 -- same pattern as every other
+     admin-read policy, not a service-role workaround) and email (via the
+     service-role client, since auth.users isn't a public-schema table
+     RLS can govern) alongside the full shipping address now that orders
+     actually capture one.
+  3. **Analytics showed a subscriber count but not who** -- now lists
+     actual subscriber emails with signup dates, not just a number.
+  Verified live: admin nav link appears after sign-in (confirmed with a
+  proper `waitFor`, not a timeout -- an earlier timing-based check falsely
+  read it as missing), product creation redirects to the edit page with
+  photos/video sections immediately visible, and a test order's row shows
+  the exact customer name/email/phone/address. All test data cleaned up
+  after. **Deliberately not built**: per-visitor "who viewed what" page
+  tracking -- the current privacy policy explicitly promises no visitor
+  identification is stored for page views; adding that would mean
+  rewriting that promise, not just a code change, so it's flagged to the
+  user rather than silently built.
 - 2026-10-13: **Real functional gap found and fixed**: user asked "why
   isn't phone/address collected at Google sign-in" -- the honest answer
   surfaced a bigger problem: nothing collected a shipping address

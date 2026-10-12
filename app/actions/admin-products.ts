@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { requireAdmin, logAdminAction } from '@/lib/admin-guard';
 import { FABRICS, SIZES, type Fabric, type Size } from '@/lib/catalog-types';
 import type { AdminActionState } from '@/lib/admin-types';
@@ -46,7 +47,10 @@ export async function createProduct(_prev: AdminActionState, formData: FormData)
 
   await logAdminAction(supabase, userId, 'create_product', 'products', product.id, { name });
   revalidatePath('/admin/products');
-  return { status: 'success' };
+  // Straight to the edit page -- that's where photos, video, and sizes
+  // actually live. Staying on this bare-details page after creation was
+  // confusing (looked like there was no way to add media at all).
+  redirect(`/admin/products/${product.id}`);
 }
 
 export async function updateProduct(productId: string, _prev: AdminActionState, formData: FormData): Promise<AdminActionState> {

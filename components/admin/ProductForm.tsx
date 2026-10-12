@@ -63,7 +63,6 @@ export default function ProductForm({
       )}
 
       {state.status === 'error' && <p className="text-body-sm text-destructive">{state.message}</p>}
-      {state.status === 'success' && mode === 'create' && <p className="text-body-sm text-primary">Created. Find it in the product list to add sizes and photos.</p>}
       {state.status === 'success' && mode === 'edit' && <p className="text-body-sm text-primary">Saved.</p>}
 
       <button

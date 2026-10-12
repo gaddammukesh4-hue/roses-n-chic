@@ -6,17 +6,31 @@ import { formatPrice } from '@/lib/catalog-types';
 
 const STATUSES = ['pending', 'paid', 'failed', 'refunded', 'cancelled', 'fulfilled'] as const;
 
+type ShippingAddress = {
+  full_name: string;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  phone: string | null;
+} | null;
+
 type Order = {
   id: string;
   status: string;
   total: number;
   currency: 'INR' | 'USD';
   tracking_number: string | null;
+  shipping_address: ShippingAddress;
   created_at: string;
   order_items: { product_name: string; size: string; quantity: number }[];
 };
 
-export default function OrderRow({ order }: { order: Order }) {
+type Customer = { name: string | null; phone: string | null; email: string | null };
+
+export default function OrderRow({ order, customer }: { order: Order; customer: Customer }) {
   const [status, setStatus] = useState(order.status);
   const [tracking, setTracking] = useState(order.tracking_number ?? '');
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +53,30 @@ export default function OrderRow({ order }: { order: Order }) {
 
   return (
     <tr className="border-t border-border align-top">
-      <td className="px-4 py-3 text-caption text-muted-foreground">{order.id.slice(0, 8)}</td>
+      <td className="px-4 py-3 text-caption text-muted-foreground">
+        {order.id.slice(0, 8)}
+        <br />
+        {new Date(order.created_at).toLocaleDateString()}
+      </td>
+      <td className="px-4 py-3 text-body-sm">
+        {customer.name && <div className="font-medium">{customer.name}</div>}
+        {customer.email && <div className="text-muted-foreground">{customer.email}</div>}
+        {customer.phone && <div className="text-muted-foreground">{customer.phone}</div>}
+        {!customer.name && !customer.email && !customer.phone && <span className="text-muted-foreground">—</span>}
+      </td>
+      <td className="px-4 py-3 text-body-sm">
+        {order.shipping_address ? (
+          <>
+            <div>{order.shipping_address.full_name}</div>
+            <div className="text-muted-foreground">
+              {order.shipping_address.line1}{order.shipping_address.line2 ? `, ${order.shipping_address.line2}` : ''}, {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}
+            </div>
+            {order.shipping_address.phone && <div className="text-muted-foreground">{order.shipping_address.phone}</div>}
+          </>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )}
+      </td>
       <td className="px-4 py-3 text-body-sm">
         {order.order_items.map((i) => `${i.product_name} (${i.size}) × ${i.quantity}`).join(', ')}
       </td>
