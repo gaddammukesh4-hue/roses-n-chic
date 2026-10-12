@@ -82,6 +82,25 @@ Update this file at the end of every phase.
   exactly what the user saw), then against localhost after the fix, on
   both webkit and chromium via Playwright -- not just code review.
 
+  Re-verifying fix #2 directly on the live deployment (after the first
+  push) surfaced two MORE real bugs in the mobile menu I'd just added,
+  caught by testing the actual result rather than trusting the local pass:
+  - The panel's CSS (`left: calc(-1 * ...); right: -100vw`) was a botched
+    attempt at full-bleed width that instead made it ~400px wider than the
+    390px viewport, overflowing off-screen.
+  - `.nav__mobile-menu { position: relative }` made the dropdown panel's
+    `position: absolute` resolve against that small toggle-button wrapper
+    instead of the full-width `.nav` bar, collapsing it to ~40px wide.
+  - Separately: a leftover pre-Phase-9 CSS rule, `.nav__tools a:nth-child(2)
+    { display: none }` (originally meant to hide the old search link,
+    removed in Phase 9), was coincidentally also matching the new Atelier
+    link (literally the 2nd `<a>` child of its own parent, anywhere inside
+    .nav__tools) and hiding it with a zero-size box. Removed the stale
+    selector.
+  Fixed all three, then re-verified on both engines with both links
+  rendering at correct, distinct positions and both navigating correctly,
+  before pushing again.
+
 - 2026-10-12: Closed out the `npm audit` eslint-config-next finding (open
   since Phase 0) as a deliberate accepted risk rather than leaving it
   ambiguous. Re-checked: no stable eslint-config-next release newer than

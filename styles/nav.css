@@ -31,10 +31,10 @@
 
 /* Mobile menu (Collections/Atelier) -- hidden on desktop, where .nav__links
    already shows them inline. */
-.nav__mobile-menu { display: none; position: relative; }
+.nav__mobile-menu { display: none; }
 .nav__mobile-toggle { background: none; border: none; font-size: 18px; line-height: 1; color: var(--color-rose-ink); cursor: pointer; padding: 4px; }
 .nav__mobile-panel {
-  position: absolute; top: calc(100% + 1px); left: calc(-1 * clamp(20px, 3.5vw, 56px)); right: -100vw;
+  position: absolute; top: calc(100% + 1px); left: 0; right: 0;
   display: flex; flex-direction: column; gap: 18px;
   padding: 20px clamp(20px, 3.5vw, 56px) 24px;
   background: var(--glass-nav-bg);
@@ -46,6 +46,6 @@
   :root { --nav-h: 60px; }
   .nav { font-size: 11px; }
   .nav__logo { font-size: 25px; }
-  .nav__links, .nav__tools a:nth-child(2) { display: none; }
+  .nav__links { display: none; }
   .nav__mobile-menu { display: block; }
 }
