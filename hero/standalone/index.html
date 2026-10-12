@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Roses N Chic | The Art of Elegance</title>
+  <meta name="description" content="Roses N Chic: handcrafted handloom cotton and viscose rayon women's clothing from our Chennai atelier.">
+  <meta name="theme-color" content="#FBF5EE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/lenis.css">
+  <link rel="stylesheet" href="hero.css">
+  <link rel="preload" as="image" href="frames/desktop/f_0001.webp" media="(min-width: 769px)">
+  <link rel="preload" as="image" href="frames/mobile/f_0001.webp" media="(max-width: 768px)">
+</head>
+<body>
+
+<header class="nav" data-hero="nav">
+  <a class="nav__logo" href="#top">Roses N Chic</a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#collections">Collections</a>
+    <a href="#atelier">Atelier</a>
+    <a href="#journal">Journal</a>
+  </nav>
+  <div class="nav__tools">
+    <a href="#search" class="nav__search">Search</a>
+    <a href="#signin">Sign in</a>
+    <a href="#bag">Bag (0)</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" data-hero="root" aria-label="Roses N Chic introduction">
+    <div class="stage" data-hero="stage">
+      <div class="stage__bg" aria-hidden="true"></div>
+      <canvas class="stage__canvas" data-hero="canvas" aria-hidden="true"></canvas>
+      <img class="stage__cutout" data-hero="cutout" src="frames/cutout.webp" alt="A woman in a blush-pink handloom wrap dress with a fabric rose on the shoulder" draggable="false">
+      <div class="stage__loader" data-hero="loader" aria-hidden="true"></div>
+
+      <div class="brand" data-hero="brand">
+        <h1 class="logo" data-hero="logo"><span>Roses</span><span>N Chic</span></h1>
+        <p class="tagline" data-hero-late>The Art of Elegance</p>
+        <a class="cta" href="#collections" data-hero-late>Explore</a>
+      </div>
+
+      <div class="side-note" data-hero-late aria-hidden="true">
+        <span class="side-note__arrow"></span>
+        <span class="side-note__text">A/W 2026 Collection</span>
+        <span class="side-note__arrow"></span>
+      </div>
+
+      <div class="counter" aria-hidden="true">
+        <span class="counter__num" data-hero="counter-num">01</span><span class="counter__total"> / 04</span>
+        <span class="counter__label" data-hero="counter-label">The Needle</span>
+      </div>
+
+      <div class="hint" data-hero="hint" aria-hidden="true"><span></span>Scroll</div>
+
+      <button class="tour" type="button" data-hero="tour" aria-pressed="false">
+        <i aria-hidden="true"></i><span data-hero="tour-label">Ambient tour</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="next" id="collections">
+    <p class="next__eyebrow">Next</p>
+    <h2>The collection</h2>
+    <p>The catalog comes here in the next build phase.</p>
+  </section>
+</main>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script type="module">
+  import Lenis from './vendor/lenis/index.js';
+  import { initHero } from './hero-engine.js';
+  gsap.registerPlugin(ScrollTrigger);
+  window.__hero = initHero({ gsap, ScrollTrigger, Lenis, root: document.querySelector('[data-hero="root"]') });
+</script>
+</body>
+</html>
