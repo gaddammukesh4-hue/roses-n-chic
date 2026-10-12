@@ -5,20 +5,29 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthDrawer from '@/components/AuthDrawer';
 import { signOut } from '@/app/actions/auth';
+import { useCart } from '@/components/CartProvider';
 
 export default function AuthControl({ signedIn }: { signedIn: boolean }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { syncAfterSignIn, syncAfterSignOut } = useCart();
 
-  // The real source of truth for "should the drawer be closed" is the
-  // signedIn prop, not AuthDrawer's own onSignedIn callback: signIn's
-  // server action calls revalidatePath, which can flip this prop to true
-  // (unmounting the !signedIn branch, including AuthDrawer/SignInForm)
-  // before SignInForm's effect ever runs its onClose() call. Without this,
-  // `open` stays stuck true from the original manual open and resurfaces
-  // the next time the drawer remounts after a later sign-out.
+  // The real source of truth for "something just signed in" is the signedIn
+  // prop, not a child form's resolved-action-state effect: signIn's server
+  // action calls revalidatePath, which can flip this prop to true -- and
+  // unmount the !signedIn branch (AuthDrawer/SignInForm) as part of that
+  // SAME update, before the child's own effect ever gets to run. Both the
+  // drawer-closing (`open`) and the cart-merge (`syncAfterSignIn`) depend on
+  // this prop instead of that unreliable callback. Confirmed broken by
+  // tracing actual execution with Playwright, not by inspection.
   useEffect(() => {
-    if (signedIn) setOpen(false);
+    if (signedIn) {
+      setOpen(false);
+      syncAfterSignIn();
+    }
+    // syncAfterSignIn is a fresh closure from useCart() every render; only
+    // signedIn flipping should re-trigger this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signedIn]);
 
   if (signedIn) {
@@ -32,7 +41,10 @@ export default function AuthControl({ signedIn }: { signedIn: boolean }) {
         <button
           type="button"
           onClick={() => {
-            signOut().then(() => router.refresh());
+            signOut().then(() => {
+              syncAfterSignOut();
+              router.refresh();
+            });
           }}
           className="cursor-pointer"
         >

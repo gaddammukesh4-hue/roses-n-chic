@@ -19,6 +19,11 @@ export default function AuthDrawer({ open, onClose }: { open: boolean; onClose: 
   }, [open, onClose]);
 
   function handleSignedIn() {
+    // Cart merge lives in AuthControl's signedIn-prop effect, not here --
+    // see the comment there for why (this component can unmount as part of
+    // the same update that resolves the sign-in action, before this ever
+    // runs). router.refresh()/onClose() are harmless best-effort immediacy;
+    // AuthControl's effect is the one actually guaranteed to fire.
     router.refresh();
     onClose();
   }

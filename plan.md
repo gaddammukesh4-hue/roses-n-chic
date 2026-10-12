@@ -16,7 +16,8 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 | 4 Database | **Done.** Applied to the live `rnc-dev` project, seeded, RLS verified independently via the anon key. |
 | 5 Catalog and product pages | **Done.** Verified against real data. Reel/video and Custom Tailored deliberately deferred (no media yet, needs Phase 6 auth). |
 | 6 Accounts | **Done** (email/password). Verified live: sign up, sign in, measurements save/remove, sign out, RLS. Google sign-in deferred -- needs your Google Cloud OAuth credentials. |
-| 7 to 12 | Not started. |
+| 7 Cart and checkout | Cart **done**, verified live (guest + signed-in + merge-on-sign-in). Payment not started -- needs your Razorpay test keys. |
+| 8 to 12 | Not started. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
 

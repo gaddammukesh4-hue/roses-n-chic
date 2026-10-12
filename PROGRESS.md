@@ -9,7 +9,7 @@ Update this file at the end of every phase.
 - [x] Phase 4: Database. Applied to the live `rnc-dev` project on 2026-10-12 (`supabase link` + `supabase db push`, all 4 migrations). Seed data loaded (6 products, 30 variants). RLS verified two ways: through the app (draft product 404s, active products list correctly), and independently via raw REST calls with the anon key (`/rest/v1/products` returns only the 5 active rows; `/rest/v1/measurements` returns `[]` with no auth) -- the Phase 4 "done when" criterion is genuinely confirmed, not just true by construction.
 - [x] Phase 5: Catalog and product pages. Verified against the live database on 2026-10-12: /collections renders all 5 active products with real fabric/price/filters, /collections/[slug] renders the full size matrix, fabric/care notes, and JSON-LD. Deferred on purpose, not half-built: the video-badge/hover-reel/fullscreen-reel behavior (steps 3-5) has no media to work with yet (no product photography or reels exist, only the hero's own frames); "Custom Tailored" sizing (step 8) needs Phase 6 auth first. "Add to bag" is a visibly disabled button, not a fake-functional one -- Phase 7 wires it up. Found and fixed a real bug along the way: Nav had no styles of its own and only rendered correctly on the homepage (the only page that happened to also load hero.css) -- extracted nav.css as a globally-loaded shared file so Nav works on every page.
 - [~] Phase 6: Accounts. Built and verified end-to-end against the live project (2026-10-12): slide-out frosted-glass Sign In / Create Account drawer (components/AuthDrawer.tsx, reusing the Phase 1 --glass-drawer-* tokens for the first time), email/password auth via Server Actions (app/actions/auth.ts), /auth/callback route for email-confirmation and password-recovery links, /account/reset-password, and the account page with a working save/remove measurements flow (app/actions/measurements.ts). Verified live: sign up (admin-confirmed test users, since Supabase's public signup endpoint blocks `@example.com` and the project's default email rate limit is 2/hour), sign in, Nav flips Sign-in <-> Account/Sign-out correctly, measurement save+display+remove, sign out, and RLS (profiles/measurements insert-own policies) all confirmed against the real database. Deferred: Google sign-in (needs Google Cloud OAuth credentials -- a user action, not started), guest-cart merge (no cart exists until Phase 7).
-- [ ] Phase 7: Cart and checkout
+- [~] Phase 7: Cart and checkout. Cart is done and verified live (2026-10-12): frosted-glass cart drawer (components/CartDrawer.tsx), guest cart in localStorage, signed-in cart in the database (app/actions/cart.ts, bound by Phase 4's RLS), automatic merge of guest items into the DB cart right after sign-in, quantity controls capped at live stock, and a /checkout review page. Payment (order creation, Razorpay/Stripe, webhook) not started -- needs your Razorpay test-mode keys first, since order creation and payment verification are meant to happen together per plan.md's security model, not as two separate half-built pieces.
 - [ ] Phase 8: Admin panel
 - [ ] Phase 9: Marketing, SEO, content
 - [ ] Phase 10: Security review
@@ -29,6 +29,21 @@ Update this file at the end of every phase.
   eslint-config-next dev-dependency chain (braces/micromatch/fast-glob ReDoS, GHSA-vfj7-8cjw-p6xm).
   Dev-only, not shipped to production; the auto-fix downgrades eslint-config-next to 14.2.35
   (a breaking change), so it was left for a deliberate decision rather than applied blindly.
+- 2026-10-12: During Phase 7, found the Phase 6 drawer-reopen fix had only
+  fixed the symptom, not the root cause -- the same pattern (a child form
+  effect calling back to a parent on sign-in success) was reused for the
+  cart merge and it silently never ran. Root cause: `signIn`'s
+  `revalidatePath` call can unmount SignInForm (as part of the same RSC
+  update that flips Nav's signedIn prop) before its own resolved-action-
+  state effect gets a chance to fire. Fixed properly this time: both the
+  drawer-close and the cart-merge now live in AuthControl's effect watching
+  the `signedIn` prop directly (the one thing proven to update reliably),
+  not in any child form's callback. Confirmed via direct Supabase REST
+  queries (not just UI checks) that the merge actually lands in the
+  database, and that two earlier "it's not working" results during testing
+  were test-timing bugs (not waiting long enough for sequential DB round
+  trips), not app bugs -- verified by tracing server-side logs before
+  concluding either way.
 - 2026-10-12: Real bug found and fixed during Phase 6 testing, not just by
   inspection: AuthDrawer could reopen itself automatically right after
   sign-out. Root cause was a race between signIn's server action (which calls
