@@ -26,15 +26,20 @@ async function waitForRazorpay(timeoutMs = 5000): Promise<boolean> {
   return typeof window.Razorpay !== 'undefined';
 }
 
-export default function CheckoutButton({ onSuccess }: { onSuccess: () => void }) {
+export default function CheckoutButton({ addressId, onSuccess }: { addressId: string | null; onSuccess: () => void }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
 
   async function handlePay() {
+    if (!addressId) {
+      setError('Select a shipping address first.');
+      setStatus('error');
+      return;
+    }
     setError(null);
     setStatus('creating');
 
-    const result = await createOrder();
+    const result = await createOrder(addressId);
     if ('error' in result) {
       setError(result.error);
       setStatus('error');
@@ -86,8 +91,8 @@ export default function CheckoutButton({ onSuccess }: { onSuccess: () => void })
           <button
             type="button"
             onClick={handlePay}
-            disabled={status === 'creating' || status === 'paying' || status === 'confirming'}
-            className="w-full rounded-none bg-primary text-on-primary px-11 py-[15px] text-body-sm uppercase tracking-[0.14em] transition-colors duration-base hover:bg-secondary active:scale-[0.97] cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+            disabled={!addressId || status === 'creating' || status === 'paying' || status === 'confirming'}
+            className="w-full rounded-none bg-primary text-on-primary px-11 py-[15px] text-body-sm uppercase tracking-[0.14em] transition-colors duration-base hover:bg-secondary active:scale-[0.97] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {status === 'creating' ? 'Preparing…' : status === 'confirming' ? 'Confirming…' : 'Pay now'}
           </button>

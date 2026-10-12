@@ -1,13 +1,15 @@
-import { BUSINESS_LEGAL_NAME, BUSINESS_GSTIN_STATUS, BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_TEL } from '@/lib/business-info';
+import { BUSINESS_LEGAL_NAME, BUSINESS_ADDRESS, BUSINESS_GSTIN_STATUS, BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_TEL } from '@/lib/business-info';
 
 /** Shared "who operates this site" + grievance-contact block for the
- * Privacy and Terms pages -- one place to update once real business
- * details (registered address, confirmed GSTIN) are available. */
+ * Privacy and Terms pages -- one place to update once the GSTIN is
+ * confirmed. */
 export default function BusinessContact() {
   return (
     <>
       <h2>Who operates this site</h2>
-      <p>Roses N Chic is operated by {BUSINESS_LEGAL_NAME}. {BUSINESS_GSTIN_STATUS}.</p>
+      <p>
+        Roses N Chic is operated by {BUSINESS_LEGAL_NAME}, {BUSINESS_ADDRESS}. {BUSINESS_GSTIN_STATUS}.
+      </p>
 
       <h2>Grievance Officer</h2>
       <p>

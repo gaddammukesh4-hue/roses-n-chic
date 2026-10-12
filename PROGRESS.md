@@ -80,6 +80,41 @@ Update this file at the end of every phase.
   actual file through the file input, confirmed the video player appears
   with the uploaded content; (3) all test data (product, storage file,
   admin user, audit log rows) cleaned up afterward.
+- 2026-10-13: **Real functional gap found and fixed**: user asked "why
+  isn't phone/address collected at Google sign-in" -- the honest answer
+  surfaced a bigger problem: nothing collected a shipping address
+  *anywhere*, not just at Google sign-in. `createOrder` never asked for
+  one; the account page literally said "Address book is planned for a
+  future update." A customer could pay for an order today with zero
+  record of where to ship it. The `addresses` table and
+  `orders.shipping_address` column have existed since Phase 4's schema,
+  just never wired to any UI. Built: app/actions/addresses.ts
+  (add/delete, RLS-bound same pattern as measurements), components/
+  AddressForm.tsx + DeleteAddressButton.tsx (account page, replaces the
+  placeholder text), components/AddressPicker.tsx (radio-select existing
+  + inline add-new, used at checkout). app/actions/checkout.ts's
+  `createOrder` now requires an `addressId`, looks it up (RLS + explicit
+  ownership check), and stores the full address as `orders.shipping_address`
+  jsonb -- CheckoutButton's Pay button is disabled until an address is
+  selected. Verified live end-to-end: created a test user, a real
+  in-stock product, signed in, added to bag, added a new address inline
+  at checkout, clicked Pay, and confirmed the resulting order row in the
+  database has the exact address stored correctly -- then deleted all of
+  it. Also added a visible "Admin" link to both the desktop nav and the
+  mobile menu for signed-in admins (previously had to know the `/admin`
+  URL by heart).
+- 2026-10-13: Business identity updated again -- user gave "Aruna
+  Apparals, Chinnamushidivada, Visakhapatnam -531173" as the real
+  business name + address, replacing the earlier "GM Innovations Private
+  Limited" placeholder. lib/business-info.ts and components/
+  BusinessContact.tsx updated; GSTIN still "in progress" (unconfirmed).
+  Saved to cross-session memory, including the open question of whether
+  "Aruna Apparals" is a trade name under a separately-registered company.
+- 2026-10-13: User explicitly deferred custom domain and Razorpay KYC
+  ("can be done later, remember and remind me after everything else is
+  done") -- saved to cross-session memory so these aren't mistakenly
+  flagged as overlooked gaps in future status updates, and so they get
+  raised again once the rest of the build is genuinely done.
 - 2026-10-13: Granted admin access to gaddammukesh8074@gmail.com (the
   account that signed in via Google) via direct profiles.is_admin update
   -- same mechanism as every other admin grant this project, just

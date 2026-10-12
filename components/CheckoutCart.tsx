@@ -1,13 +1,25 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/CartProvider';
 import { formatPrice } from '@/lib/catalog-types';
 import CheckoutButton from '@/components/CheckoutButton';
+import AddressPicker from '@/components/AddressPicker';
+import type { Address } from '@/lib/address-types';
 
-export default function CheckoutCart() {
+export default function CheckoutCart({ addresses }: { addresses: Address[] }) {
   const { items, refresh } = useCart();
   const subtotalInr = items.reduce((sum, i) => sum + i.priceInr * i.quantity, 0);
+
+  // A manual pick, once made, wins -- but if the address list changes (one
+  // added or the previously picked one deleted) and that pick is no longer
+  // valid, fall back to a sensible default. Derived during render instead
+  // of synced via an effect -- no separate "resync" step needed.
+  const [manualPick, setManualPick] = useState<string | null>(null);
+  const selectedAddressId = (manualPick && addresses.some((a) => a.id === manualPick))
+    ? manualPick
+    : (addresses.find((a) => a.is_default)?.id ?? addresses[0]?.id ?? null);
 
   if (items.length === 0) {
     return (
@@ -31,7 +43,8 @@ export default function CheckoutCart() {
         <span>Subtotal</span>
         <span>{formatPrice(subtotalInr, 'INR')}</span>
       </div>
-      <CheckoutButton onSuccess={refresh} />
+      <AddressPicker addresses={addresses} selectedId={selectedAddressId} onSelect={setManualPick} />
+      <CheckoutButton addressId={selectedAddressId} onSuccess={refresh} />
     </>
   );
 }

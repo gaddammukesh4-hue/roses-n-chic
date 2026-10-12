@@ -20,13 +20,24 @@ export type CreateOrderResult =
  * users at all (Phase 4 RLS) -- this function *is* "the server" that's
  * allowed to write them, not a bypass of that rule.
  */
-export async function createOrder(): Promise<CreateOrderResult> {
+export async function createOrder(addressId: string): Promise<CreateOrderResult> {
   const supabase = await createClient();
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) return { error: 'Sign in to check out.' };
 
   const allowed = await checkRateLimit('checkout', 20, 60 * 60);
   if (!allowed) return { error: 'Too many checkout attempts. Try again later.' };
+
+  // RLS (addresses_select_own) already restricts this to the signed-in
+  // user's own addresses -- the explicit eq(user_id) is belt-and-suspenders,
+  // same pattern as every other ownership check in this codebase.
+  const { data: address } = await supabase
+    .from('addresses')
+    .select('*')
+    .eq('id', addressId)
+    .eq('user_id', userData.user.id)
+    .maybeSingle();
+  if (!address) return { error: 'Select a shipping address.' };
 
   const items = await getCart();
   if (items.length === 0) return { error: 'Your bag is empty.' };
@@ -42,7 +53,7 @@ export async function createOrder(): Promise<CreateOrderResult> {
 
   const { data: order, error: orderError } = await admin
     .from('orders')
-    .insert({ user_id: userData.user.id, currency: 'INR', subtotal, total: subtotal, payment_provider: 'razorpay' })
+    .insert({ user_id: userData.user.id, currency: 'INR', subtotal, total: subtotal, payment_provider: 'razorpay', shipping_address: address })
     .select('id')
     .single();
   if (orderError) return { error: orderError.message };

@@ -8,10 +8,15 @@ import { getCurrency } from '@/app/actions/currency';
 
 export default async function Nav() {
   let signedIn = false;
+  let isAdmin = false;
   if (hasSupabaseConfig()) {
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     signedIn = Boolean(data.user);
+    if (data.user) {
+      const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', data.user.id).maybeSingle();
+      isAdmin = Boolean(profile?.is_admin);
+    }
   }
   const currency = await getCurrency();
 
@@ -21,9 +26,10 @@ export default async function Nav() {
       <nav className="nav__links" aria-label="Main">
         <Link href="/collections">Collections</Link>
         <Link href="/atelier">Atelier</Link>
+        {isAdmin && <Link href="/admin/products">Admin</Link>}
       </nav>
       <div className="nav__tools">
-        <MobileNavMenu />
+        <MobileNavMenu isAdmin={isAdmin} />
         <AuthControl signedIn={signedIn} />
         <CartControl currency={currency} />
       </div>

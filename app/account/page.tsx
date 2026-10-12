@@ -3,8 +3,11 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import MeasurementForm from '@/components/MeasurementForm';
 import DeleteMeasurementButton from '@/components/DeleteMeasurementButton';
+import AddressForm from '@/components/AddressForm';
+import DeleteAddressButton from '@/components/DeleteAddressButton';
 import { createClient } from '@/lib/supabase/server';
 import { hasSupabaseConfig, formatPrice } from '@/lib/catalog';
+import type { Address } from '@/lib/address-types';
 
 export const metadata: Metadata = { title: 'Account', robots: { index: false, follow: false } };
 
@@ -33,8 +36,9 @@ export default async function AccountPage() {
   let name: string | null = null;
   let measurements: Measurement[] = [];
   let orders: Order[] = [];
+  let addresses: Address[] = [];
   if (user && supabase) {
-    const [{ data: profile }, { data: measurementRows }, { data: orderRows }] = await Promise.all([
+    const [{ data: profile }, { data: measurementRows }, { data: orderRows }, { data: addressRows }] = await Promise.all([
       supabase.from('profiles').select('name').eq('id', user.id).maybeSingle(),
       supabase.from('measurements').select('id, label, data, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
       supabase
@@ -42,10 +46,12 @@ export default async function AccountPage() {
         .select('id, status, total, currency, created_at, order_items(product_name, size, quantity)')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false }),
+      supabase.from('addresses').select('id, full_name, line1, line2, city, state, postal_code, country, phone, is_default').eq('user_id', user.id).order('created_at', { ascending: false }),
     ]);
     name = profile?.name ?? null;
     measurements = (measurementRows ?? []) as Measurement[];
     orders = (orderRows ?? []) as unknown as Order[];
+    addresses = (addressRows ?? []) as Address[];
   }
 
   return (
@@ -55,7 +61,7 @@ export default async function AccountPage() {
         {!user ? (
           <div className="rounded-md border border-border bg-card p-12 text-center space-y-2">
             <h1 className="text-h2">Sign in to view your account</h1>
-            <p className="text-body-sm text-muted-foreground">Use "Sign in" in the top menu.</p>
+            <p className="text-body-sm text-muted-foreground">Use &ldquo;Sign in&rdquo; in the top menu.</p>
           </div>
         ) : (
           <div className="space-y-12">
@@ -107,9 +113,25 @@ export default async function AccountPage() {
               )}
             </section>
 
-            <section className="space-y-2">
+            <section className="space-y-4">
               <h2 className="text-h3">Addresses</h2>
-              <p className="text-body-sm text-muted-foreground">Address book is planned for a future update.</p>
+              {addresses.length > 0 && (
+                <ul className="space-y-2">
+                  {addresses.map((a) => (
+                    <li key={a.id} className="flex items-center justify-between rounded-md border border-border bg-card p-4 text-body-sm">
+                      <div>
+                        <p className="font-medium">{a.full_name}</p>
+                        <p className="text-muted-foreground">
+                          {a.line1}{a.line2 ? `, ${a.line2}` : ''}, {a.city}, {a.state} {a.postal_code}
+                        </p>
+                        {a.phone && <p className="text-muted-foreground">{a.phone}</p>}
+                      </div>
+                      <DeleteAddressButton id={a.id} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <AddressForm />
             </section>
           </div>
         )}
