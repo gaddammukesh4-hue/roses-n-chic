@@ -41,8 +41,16 @@ export default function ReturnsPolicyPage() {
 
         <h2>How to start a return</h2>
         <p>
-          Write to us through the contact details on our Instagram, @rosesnchic, with your order
-          number. We'll confirm the next steps.
+          Write to us through the contact details on our Instagram,{' '}
+          <a
+            href="https://instagram.com/rosesnchic"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base"
+          >
+            @rosesnchic <span className="sr-only">(opens in a new tab)</span>
+          </a>
+          , with your order number. We'll confirm the next steps.
         </p>
 
         <h2>Refunds</h2>

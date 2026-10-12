@@ -22,12 +22,33 @@ Update this file at the end of every phase.
   - **Security headers** (next.config.ts): CSP, Strict-Transport-Security, X-Content-Type-Options, Referrer-Policy, Permissions-Policy added via `headers()`. CSP keeps `'unsafe-inline'` for script-src/style-src -- Next.js's own hydration scripts and the Tailwind/inline-style JSX used throughout need it; a nonce-based strict CSP would need a middleware rewrite of every response, left for a deliberate Phase 11 pass rather than risked against checkout right now. Verified live: headers present on a built-and-started production server, homepage and checkout iframe still render correctly.
   - **Dependabot**: `.github/dependabot.yml` added (npm + github-actions, weekly). Still needs you to flip "Dependabot alerts" / "Dependabot security updates" on in the repo's Settings -> Code security page -- a one-click dashboard toggle, not a credential I can act on.
   - **Git history secret scan**: ran a pattern scan (`sk_live`, `rzp_live`, `github_pat_`, `sbp_`, private-key headers, etc.) across the full `git log --all -p`. Clean -- `git ls-files` also confirms only `.env.local.example` (no real values) was ever tracked, `.env.local` itself was never committed.
-  - Not yet done: `threat-modeling`/`owasp-audit`/`api-audit` skill passes over the Phase 9 code specifically (the Phase 7 entry above covers Phases 4-8's server actions; newsletter.ts/analytics.ts/rate-limit.ts all use the same RLS-bound-client-except-where-documented-otherwise pattern, so a full pass is low-risk but not yet done formally), OWASP ZAP against a staging site (no Vercel link yet), and the npm audit eslint-config-next finding (dev-only ReDoS, still open, same as Phase 0).
-- [ ] Phase 11: Quality and speed
+  - **OWASP self-review of the new Phase 9/10 code** (2026-10-12): newsletter.ts, analytics.ts, and rate-limit.ts all use the regular RLS-bound client (lib/supabase/server.ts), *except* rate-limit.ts, which deliberately uses the service-role client -- same justification as payment_events/admin_audit_log: `rate_limit_hits` has no RLS policy for anon/authenticated at all, so there's no "ownership" for RLS to enforce, and the whole point is that a client can't read or clear its own bucket. Verified live against the real database (not just read): anon can insert a newsletter signup and a page view but cannot read either back; anon insert into `rate_limit_hits` is actually rejected (42501); the admin-analytics select policy mirrors the already-proven admin-role-check pattern from Phase 8. No issues found.
+  - **`npm audit` eslint-config-next finding: closed, not fixed** (see Notes below) -- re-checked, still no safe non-breaking fix available; accepted as a dev-only risk with no path to the production runtime.
+  - Not yet done: formal `threat-modeling`/`api-audit` skill pass as a named exercise (the self-review above covers the same ground informally), OWASP ZAP against a staging site (no Vercel link yet).
+- [~] Phase 11: Quality and speed. Started 2026-10-13, scoped to the pages touched in Phase 9 (full-site Playwright checkout re-run and real-device testing still pending):
+  - Ran Lighthouse (desktop, production build) against home, /atelier, /collections, and all four policy pages. Found and fixed three real issues, not just confirmed clean:
+    1. **Contrast bug, same root cause as the Phase 1 CTA bug**: `.next__eyebrow` ("The collection" label under the hero) used `color: var(--champagne)` -- 2.17:1 on ivory, fails even the 3:1 non-text minimum, violating DESIGN.md's own "champagne is accent/border/decorative only, never text" rule. Fixed to `var(--rose-mid)` (5.15:1) in all five existing copies of hero.css (styles/, hero/standalone/, hero/nextjs/styles/, and the legacy roses-n-chic-hero sibling folder's nextjs/ and standalone/ copies).
+    2. **Focusable content behind `aria-hidden`**: AuthDrawer and CartDrawer set `aria-hidden={!open}` when closed but left their inputs/buttons tab-focusable -- a keyboard or screen-reader user could reach a "hidden" sign-in form. Fixed by adding `inert={!open}` alongside the existing `aria-hidden` (React 19 passes it straight through as the native DOM attribute, which removes focusability and the accessibility-tree presence together).
+    3. **Links relying on color alone**: the inline @rosesnchic Instagram mentions in /atelier and all four policy pages' "contact us" lines were either color-only links or not links at all (plain text mentioning the handle). Made all of them real links with an underline, plus a screen-reader-only "(opens in a new tab)" suffix (WCAG 2.4.4).
+  - Re-verified after fixes: Performance 100, Accessibility 100, Best Practices 100, SEO 100 on every page tested (home included).
+  - Not yet done: Playwright re-verification of the full sign-up -> cart -> pay -> order flow (Phase 7/8 already verified this live and nothing in Phase 9/10 touched that code path), a real low-end-phone/slow-network pass (the hero's own mobile jank fix was verified this way in an earlier phase; the new Phase 9 pages have no canvas/scroll-animation work to stress-test the same way), and a screen-reader (not just automated-audit) pass.
 - [ ] Phase 12: Launch
 
 ## Notes
 (Write decisions and open problems here.)
+
+- 2026-10-12: Closed out the `npm audit` eslint-config-next finding (open
+  since Phase 0) as a deliberate accepted risk rather than leaving it
+  ambiguous. Re-checked: no stable eslint-config-next release newer than
+  16.4.0 exists yet (16.5.0 is canary-only), so the only "fix" npm offers is
+  still a downgrade to 14.2.35 -- a semver-major regression against a
+  Next 16 app, trading a real compatibility risk for a theoretical one. The
+  5 flagged packages (braces/micromatch/fast-glob, ReDoS GHSA-vfj7-8cjw-p6xm)
+  are dev-only (eslint's own file-globbing), never bundled into what ships
+  to a visitor's browser or the server's production runtime -- exploiting it
+  would require controlling the glob patterns fed to a local/CI lint run,
+  not something reachable through the live site. Decision: leave as-is,
+  revisit when eslint-config-next ships a stable 16.5.x (or later) release.
 
 - 2026-10-12: Removed the 6 placeholder products (seeded for Phase 4-8
   testing) now that the admin panel works and the owner is entering real

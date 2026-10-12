@@ -31,6 +31,7 @@ export default function AuthDrawer({ open, onClose }: { open: boolean; onClose: 
   return (
     <div
       aria-hidden={!open}
+      inert={!open}
       className={`fixed inset-0 z-[60] transition-opacity duration-base ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
     >
       <button

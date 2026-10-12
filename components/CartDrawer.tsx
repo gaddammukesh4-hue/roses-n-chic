@@ -20,6 +20,7 @@ export default function CartDrawer({ open, onClose, currency }: { open: boolean;
   return (
     <div
       aria-hidden={!open}
+      inert={!open}
       className={`fixed inset-0 z-[60] transition-opacity duration-base ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
     >
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-rose-ink/30 cursor-pointer" />

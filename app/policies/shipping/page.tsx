@@ -45,7 +45,18 @@ export default function ShippingPolicyPage() {
         </p>
 
         <h2>Contact</h2>
-        <p>Questions about a shipment? Write to us through the contact details on our Instagram, @rosesnchic.</p>
+        <p>
+          Questions about a shipment? Write to us through the contact details on our Instagram,{' '}
+          <a
+            href="https://instagram.com/rosesnchic"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base"
+          >
+            @rosesnchic <span className="sr-only">(opens in a new tab)</span>
+          </a>
+          .
+        </p>
       </PolicyLayout>
       <Footer />
     </>

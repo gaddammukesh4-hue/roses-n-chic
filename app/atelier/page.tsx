@@ -64,9 +64,9 @@ export default function AtelierPage() {
               href="https://instagram.com/rosesnchic"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary hover:text-primary transition-colors duration-base"
+              className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base"
             >
-              @rosesnchic
+              @rosesnchic <span className="sr-only">(opens in a new tab)</span>
             </a>
             .
           </p>

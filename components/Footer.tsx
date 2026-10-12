@@ -17,7 +17,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="inline-block text-body-sm text-secondary hover:text-primary transition-colors duration-base"
           >
-            @rosesnchic on Instagram
+            @rosesnchic on Instagram <span className="sr-only">(opens in a new tab)</span>
           </a>
         </div>
 
