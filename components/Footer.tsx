@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import NewsletterForm from '@/components/NewsletterForm';
+import { BUSINESS_LEGAL_NAME } from '@/lib/business-info';
 
 export default function Footer() {
   return (
@@ -45,7 +46,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-border px-6 py-6 text-caption text-muted-foreground text-center">
-        © {new Date().getFullYear()} Roses N Chic, Chennai.
+        © {new Date().getFullYear()} Roses N Chic, Chennai. Operated by {BUSINESS_LEGAL_NAME}.
       </div>
     </footer>
   );

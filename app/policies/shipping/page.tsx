@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import PolicyLayout from '@/components/PolicyLayout';
+import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_TEL } from '@/lib/business-info';
 
 export const metadata: Metadata = {
   title: 'Shipping policy',
@@ -17,7 +18,7 @@ export default function ShippingPolicyPage() {
       <Nav />
       <PolicyLayout
         title="Shipping policy"
-        lastUpdated="Last updated 12 October 2026. Draft placeholder — delivery times and costs below need to be confirmed with an actual courier before launch, and reviewed for GST treatment."
+        lastUpdated="Last updated 13 October 2026. Draft placeholder — delivery times and costs below need to be confirmed with an actual courier before launch, and reviewed for GST treatment."
       >
         <h2>Processing time</h2>
         <p>
@@ -46,7 +47,11 @@ export default function ShippingPolicyPage() {
 
         <h2>Contact</h2>
         <p>
-          Questions about a shipment? Write to us through the contact details on our Instagram,{' '}
+          Questions about a shipment? Call us at{' '}
+          <a href={`tel:${BUSINESS_PHONE_TEL}`} className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base">
+            {BUSINESS_PHONE_DISPLAY}
+          </a>{' '}
+          or write to us on Instagram,{' '}
           <a
             href="https://instagram.com/rosesnchic"
             target="_blank"

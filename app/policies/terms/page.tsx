@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import PolicyLayout from '@/components/PolicyLayout';
+import BusinessContact from '@/components/BusinessContact';
 
 export const metadata: Metadata = {
   title: 'Terms of service',
@@ -16,7 +17,7 @@ export default function TermsPage() {
       <Nav />
       <PolicyLayout
         title="Terms of service"
-        lastUpdated="Last updated 12 October 2026. This is a draft and has not yet been reviewed by a qualified professional for compliance with Indian consumer law."
+        lastUpdated="Last updated 13 October 2026. This is a draft and has not yet been reviewed by a qualified professional for compliance with Indian consumer law."
       >
         <p>These terms apply whenever you buy from Roses N Chic online.</p>
 
@@ -55,19 +56,14 @@ export default function TermsPage() {
           reasonable control.
         </p>
 
-        <h2>Contact</h2>
+        <h2>Governing law</h2>
         <p>
-          Questions about these terms? Write to us through the contact details on our Instagram,{' '}
-          <a
-            href="https://instagram.com/rosesnchic"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base"
-          >
-            @rosesnchic <span className="sr-only">(opens in a new tab)</span>
-          </a>
-          .
+          These terms are governed by the laws of India. Any dispute arising from your use of
+          this site or a purchase from it is subject to the exclusive jurisdiction of the courts
+          in Chennai, Tamil Nadu.
         </p>
+
+        <BusinessContact />
       </PolicyLayout>
       <Footer />
     </>

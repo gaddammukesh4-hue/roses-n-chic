@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import PolicyLayout from '@/components/PolicyLayout';
+import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_TEL } from '@/lib/business-info';
 
 export const metadata: Metadata = {
   title: 'Returns policy',
@@ -17,7 +18,7 @@ export default function ReturnsPolicyPage() {
       <Nav />
       <PolicyLayout
         title="Returns policy"
-        lastUpdated="Last updated 12 October 2026. Draft placeholder — the return window and conditions below need business and legal sign-off before launch."
+        lastUpdated="Last updated 13 October 2026. Draft placeholder — the return window and conditions below need business and legal sign-off before launch."
       >
         <h2>Standard orders</h2>
         <p>
@@ -41,7 +42,11 @@ export default function ReturnsPolicyPage() {
 
         <h2>How to start a return</h2>
         <p>
-          Write to us through the contact details on our Instagram,{' '}
+          Call us at{' '}
+          <a href={`tel:${BUSINESS_PHONE_TEL}`} className="text-secondary underline underline-offset-2 hover:text-primary transition-colors duration-base">
+            {BUSINESS_PHONE_DISPLAY}
+          </a>{' '}
+          or write to us on Instagram,{' '}
           <a
             href="https://instagram.com/rosesnchic"
             target="_blank"
@@ -55,8 +60,9 @@ export default function ReturnsPolicyPage() {
 
         <h2>Refunds</h2>
         <p>
-          Approved refunds are issued to your original payment method once the returned piece is
-          received and checked. Processing times depend on your bank or payment provider.
+          Approved refunds are issued to your original payment method within 7 business days of
+          us receiving and checking the returned piece. Your bank or payment provider may take a
+          few additional days to show the credit.
         </p>
       </PolicyLayout>
       <Footer />
