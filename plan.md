@@ -14,7 +14,8 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 | 2 Hero video assets | **Done.** 211 frames and a cut-out image are in `hero/standalone/frames/`. |
 | 3 Hero scroll animation | **Done.** Integrated into the live Next.js app, verified headlessly at 1440x810 and 390x844. |
 | 4 Database | Code-complete (migrations, RLS, seed data), not yet applied — needs your Supabase project. |
-| 5 to 12 | Not started. |
+| 5 Catalog and product pages | Built, wired to real queries, shows "coming soon" until Supabase is linked. Reel/video and Custom Tailored deliberately deferred (no media yet, needs Phase 6 auth). |
+| 6 to 12 | Not started. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
 

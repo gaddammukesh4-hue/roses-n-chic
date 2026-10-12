@@ -7,29 +7,15 @@
   --rose-mid: #8e5b52;
   --serif: var(--font-serif, 'Cormorant Garamond'), 'Cormorant', Georgia, 'Times New Roman', serif;
   --sans: var(--font-sans, 'Montserrat'), system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --nav-h: 76px;
+  /* --nav-h is declared in styles/nav.css (loaded globally from app/layout.tsx,
+     alongside this file on the homepage) -- it's shared nav-bar geometry, not
+     hero-specific, so it lives there now instead of being duplicated here. */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { background: var(--ivory); }
 body { margin: 0; color: var(--rose-ink); font-family: var(--sans); background: var(--ivory); -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
-
-/* ---------- top bar ---------- */
-.nav {
-  position: fixed; inset: 0 0 auto 0; z-index: 50; height: var(--nav-h);
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 0 clamp(20px, 3.5vw, 56px);
-  background: rgba(252, 246, 241, 0.92);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(201, 162, 122, 0.28);
-  font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
-}
-.nav__logo { font-family: var(--serif); font-size: 30px; letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--rose-mid); }
-.nav__links { display: flex; gap: clamp(20px, 3vw, 44px); margin-right: auto; margin-left: clamp(24px, 4vw, 64px); }
-.nav__tools { display: flex; gap: clamp(18px, 2.4vw, 36px); }
-.nav a:not(.nav__logo) { transition: color 0.25s; }
-.nav a:not(.nav__logo):hover { color: var(--champagne); }
 
 /* ---------- hero ---------- */
 .hero { position: relative; height: 640vh; }
@@ -127,10 +113,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- phones ---------- */
 @media (max-width: 768px) {
-  :root { --nav-h: 60px; }
-  .nav { font-size: 11px; }
-  .nav__logo { font-size: 25px; }
-  .nav__links, .nav__search, .nav__tools a:nth-child(2) { display: none; }
+  /* --nav-h: 60px on phones is set in styles/nav.css */
   .brand { left: 24px; top: calc(var(--nav-h) + 26px); transform: none; }
   .logo { font-size: clamp(54px, 17vw, 88px); }
   .tagline { font-size: clamp(22px, 6.4vw, 30px); }
