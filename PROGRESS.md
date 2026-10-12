@@ -5,7 +5,7 @@ Update this file at the end of every phase.
 - [~] Phase 0: Set up. Done: git repo initialized, Next.js app scaffolded (TypeScript, App Router, Tailwind) in the project root, gsap/lenis/zod installed, dev server smoke-tested on localhost:3000. Not done (needs your accounts, see Notes): GitHub repo, Supabase `rnc-dev` project, Vercel link, Razorpay/Stripe test keys, skills from plan.md A3.
 - [ ] Phase 1: Brand and design system
 - [x] Phase 2: Hero video assets (done: frames and cut-out in hero/standalone/frames)
-- [~] Phase 3: Hero scroll animation (plain page tested in browser, including a mobile-scroll-smoothness fix to hero-engine.js on 2026-10-12; Next.js files carry the same fix but are still not integrated/tested in the Next.js app)
+- [x] Phase 3: Hero scroll animation. Integrated into the live Next.js app on 2026-10-12: components/lib/styles copied in, frames copied to public/hero/frames, app/layout.tsx and app/page.tsx wired to Nav+HeroScrub, conflicting default body styles removed from globals.css. Verified with Playwright at 1440x810 and 390x844 (real device sizes, not the browser's default window) — 0 console/page errors, full scroll sequence renders correctly at both sizes, mobile dock position and logo fade match hero/README.md.
 - [ ] Phase 4: Database
 - [ ] Phase 5: Catalog and product pages
 - [ ] Phase 6: Accounts
