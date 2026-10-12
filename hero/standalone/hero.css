@@ -81,7 +81,7 @@ a { color: inherit; text-decoration: none; }
   transition: background 0.3s, color 0.3s;
 }
 .cta::after { content: ''; position: absolute; inset: 4px -4px -4px 4px; border: 1px solid var(--champagne); z-index: -1; }
-.cta:hover { background: var(--champagne); color: #fff; }
+.cta:hover { background: var(--rose-mid); color: #fff; }
 
 /* decoration */
 .side-note {

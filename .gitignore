@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# installed skills (11MB+ of third-party payload) -- reproducible from
+# skills-lock.json via `npx skills add <source>`, see plan.md Part A3.
+# Keep skills-lock.json tracked; it's the reproducibility manifest.
+/.agents/skills
+/.claude/skills

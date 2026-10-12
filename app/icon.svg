@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="rnc-favicon-gradient" x1="0%" y1="0%" x2="75%" y2="100%">
+      <stop offset="0%" stop-color="#6c3d36" />
+      <stop offset="40%" stop-color="#9a5d50" />
+      <stop offset="100%" stop-color="#85504a" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="#fbf5ee" />
+  <circle cx="32" cy="32" r="30.5" fill="none" stroke="#c9a27a" stroke-width="1" />
+  <text x="32" y="43" font-family="'Cormorant Garamond', Georgia, 'Times New Roman', serif" font-size="34" font-weight="600" text-anchor="middle" fill="url(#rnc-favicon-gradient)">R</text>
+</svg>

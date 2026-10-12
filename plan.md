@@ -9,10 +9,10 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 
 | Phase | Status |
 |---|---|
-| 0 Set up | Not started. Do this first, on your computer. |
-| 1 Brand and design system | Partly done. Colors, fonts, and the hero look are in `hero/standalone/hero.css`. |
+| 0 Set up | Partly done. Repo git-initialized, Next.js app scaffolded, gsap/lenis/zod installed. Still needs your accounts: GitHub push, Supabase `rnc-dev`, Vercel link, Razorpay/Stripe test keys. |
+| 1 Brand and design system | **Done.** Formalized in `DESIGN.md` and `app/globals.css`. Live demo at `/design-system`. |
 | 2 Hero video assets | **Done.** 211 frames and a cut-out image are in `hero/standalone/frames/`. |
-| 3 Hero scroll animation | **Done as a plain web page** (tested in a browser). The Next.js files are in `hero/nextjs/` but are **not tested**. |
+| 3 Hero scroll animation | **Done.** Integrated into the live Next.js app, verified headlessly at 1440x810 and 390x844. |
 | 4 to 12 | Not started. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
