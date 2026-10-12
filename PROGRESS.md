@@ -2,7 +2,7 @@
 
 Update this file at the end of every phase.
 
-- [~] Phase 0: Set up. Done: git repo initialized, Next.js app scaffolded (TypeScript, App Router, Tailwind) in the project root, gsap/lenis/zod installed, dev server smoke-tested on localhost:3000. Supabase `rnc-dev` project created and linked, `.env.local` filled in (2026-10-12). Still not done: GitHub repo + push, Vercel link, Razorpay/Stripe test keys, skills from plan.md A3.
+- [~] Phase 0: Set up. Done: git repo initialized, Next.js app scaffolded (TypeScript, App Router, Tailwind) in the project root, gsap/lenis/zod installed, dev server smoke-tested on localhost:3000. Supabase `rnc-dev` project created and linked, `.env.local` filled in (2026-10-12). All four recommended plan.md A3 skills installed (2026-10-12): ui-ux-pro-max, vercel-labs/agent-skills, supabase/agent-skills, owasp-security. Still not done: GitHub repo + push, Vercel link, Razorpay/Stripe test keys.
 - [x] Phase 1: Brand and design system. DESIGN.md written (colors with computed WCAG contrast table, type scale, radius, shadows, frosted-glass tokens, button states, logo usage). Tokens wired into app/globals.css as Tailwind @theme. Logo files made: public/logo.svg, public/logo-light.svg, app/icon.svg (favicon). Live demo at /design-system (buttons, headings, cards, logo). Used the ui-ux-pro-max skill for spacing/button/glassmorphism UX guidance, but NOT its generic color-palette match (it returned a dark+gold "Liquid Glass" direction that contradicts CLAUDE.md's "no dark backgrounds" rule) — colors come from the palette already proven live in hero.css instead. Found and fixed a real WCAG AA failure along the way: the hero's "Explore" button hover state was white-on-champagne (2.35:1); changed to white-on-rose-mid (5.57:1) in all 4 copies of hero.css.
 - [x] Phase 2: Hero video assets (done: frames and cut-out in hero/standalone/frames)
 - [x] Phase 3: Hero scroll animation. Integrated into the live Next.js app on 2026-10-12: components/lib/styles copied in, frames copied to public/hero/frames, app/layout.tsx and app/page.tsx wired to Nav+HeroScrub, conflicting default body styles removed from globals.css. Verified with Playwright at 1440x810 and 390x844 (real device sizes, not the browser's default window) — 0 console/page errors, full scroll sequence renders correctly at both sizes, mobile dock position and logo fade match hero/README.md.
@@ -18,6 +18,18 @@ Update this file at the end of every phase.
 
 ## Notes
 (Write decisions and open problems here.)
+
+- 2026-10-12: Ran an OWASP-skill-guided security pass over every Server
+  Action (app/actions/auth.ts, cart.ts, measurements.ts). All of them use
+  the regular RLS-bound Supabase client (lib/supabase/server.ts), never
+  the service-role admin client -- grepped the whole app/components/lib
+  tree to confirm nothing outside lib/supabase/admin.ts references
+  service_role at all. This means ownership checks (e.g. "can this user
+  delete this cart item") are enforced by Postgres RLS itself, not by
+  app-code trust -- a forged ID from another user's data affects zero
+  rows rather than bypassing anything. No exploitable issues found. One
+  known, not-yet-built gap: rate limiting on sign-in/sign-up/password-
+  reset, which is Phase 10 scope by design, not an oversight.
 
 - 2026-10-12: Supabase `rnc-dev` project linked and schema pushed. The CLI
   personal access token used for `supabase link`/`db push` was never written
