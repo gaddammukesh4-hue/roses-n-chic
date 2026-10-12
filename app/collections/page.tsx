@@ -11,10 +11,6 @@ export const metadata: Metadata = {
   description: "Handcrafted handloom cotton and viscose rayon women's clothing from our Chennai atelier.",
 };
 
-// Filters (searchParams) and the currency cookie are genuinely per-request --
-// this is an e-commerce catalog, not a candidate for static prerendering.
-export const instant = false;
-
 type SearchParams = Promise<{ fabric?: string; size?: string; price?: string }>;
 
 export default async function CollectionsPage({ searchParams }: { searchParams: SearchParams }) {

@@ -5,10 +5,6 @@ import CurrencyToggle from '@/components/CurrencyToggle';
 import { getProductBySlug, hasSupabaseConfig, formatPrice } from '@/lib/catalog';
 import { getCurrency } from '@/app/actions/currency';
 
-// Same reasoning as app/collections/page.tsx: per-request currency cookie,
-// not a static page.
-export const instant = false;
-
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
