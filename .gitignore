@@ -46,3 +46,6 @@ next-env.d.ts
 # Keep skills-lock.json tracked; it's the reproducibility manifest.
 /.agents/skills
 /.claude/skills
+
+.vercel
+.env*

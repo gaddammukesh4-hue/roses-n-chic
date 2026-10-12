@@ -9,7 +9,7 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 
 | Phase | Status |
 |---|---|
-| 0 Set up | Partly done. Repo git-initialized, Next.js app scaffolded, gsap/lenis/zod installed. Still needs your accounts: GitHub push, Supabase `rnc-dev`, Vercel link, Razorpay/Stripe test keys. |
+| 0 Set up | **Done except Stripe.** GitHub, Supabase `rnc-dev`, and Vercel all linked. Live at https://roses-n-chic.vercel.app. Razorpay test keys in place; Stripe still not started. |
 | 1 Brand and design system | **Done.** Formalized in `DESIGN.md` and `app/globals.css`. Live demo at `/design-system`. |
 | 2 Hero video assets | **Done.** 211 frames and a cut-out image are in `hero/standalone/frames/`. |
 | 3 Hero scroll animation | **Done.** Integrated into the live Next.js app, verified headlessly at 1440x810 and 390x844. |
