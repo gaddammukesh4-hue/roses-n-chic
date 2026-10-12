@@ -20,6 +20,16 @@ Update this file at the end of every phase.
 ## Notes
 (Write decisions and open problems here.)
 
+- 2026-10-12: Removed the 6 placeholder products (seeded for Phase 4-8
+  testing) now that the admin panel works and the owner is entering real
+  inventory through it. `supabase/seed.sql` emptied so a local
+  `db reset` doesn't reintroduce them; `supabase/README.md`'s product/photo
+  instructions updated to point at the admin panel as the primary path
+  (the Storage-dashboard-folder + sync-script route documented earlier
+  still works as a bulk-upload alternative). Catalog and `/collections`
+  are correctly empty right now, not broken -- real products not entered
+  yet.
+
 - 2026-10-12: Phase 8 testing paused mid-session once for a low context
   budget, then resumed in a fresh session -- picked back up cleanly by
   reading this file, finished the remaining verification (orders page,

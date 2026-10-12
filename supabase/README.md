@@ -42,31 +42,37 @@ Supabase project to exist. It only needs one to actually *run*.
    (after signing up once Phase 6 adds auth) and set `is_admin = true` by
    hand — there's no self-serve admin signup, on purpose.
 
-## Uploading product photos
+## Adding real products and photos
 
-The `product-media` Storage bucket exists (public, created 2026-10-12,
-10MB/file limit, jpeg/png/webp only) and `product_media` has RLS matching
-every other admin-write table. You upload the files yourself through the
-Supabase dashboard; I match them to products afterward with a script.
+As of 2026-10-12 the catalog is empty on purpose -- the 6 placeholder
+dresses used to test Phases 4-8 were removed once the admin panel (Phase 8)
+was verified working, so real inventory starts from a clean slate.
 
-1. In the Supabase dashboard, go to **Storage → product-media**.
-2. For each product, **create a folder named exactly after its slug**:
-   `the-muse-wrap-dress`, `the-needle-blouse`, `glow-up-maxi`,
-   `chennai-atelier-kurta`, `petal-sleeve-top`, `ivory-rose-saree`
-   (the full current list is `select slug, name from products`).
-3. Inside each folder, upload that product's photos named so they sort in
-   the order you want them shown — `01.jpg`, `02.jpg`, etc. The first file
-   alphabetically becomes the cover image everywhere (catalog grid and the
-   product page's gallery).
-4. Tell me when you're done (or just do it any time — I can run the sync
-   whenever) and I'll run:
+**Primary path: the admin panel.** Sign in on the site, then visit
+`/admin/products/new`. Covers name/description/fabric/notes/prices/status,
+per-size stock, and photo upload (drag a file in on the product's edit
+page -- it uploads straight to Storage, no folder-naming needed). You need
+an admin account first: sign up normally through the site, then tell
+Claude your account's email so `profiles.is_admin` can be set to `true` --
+there's no self-serve admin signup, on purpose.
+
+**Alternative for bulk photo uploads:** the `product-media` Storage bucket
+(public, 10MB/file limit, jpeg/png/webp only) also accepts uploads directly
+through the Supabase dashboard if you'd rather add many photos at once
+outside the admin panel:
+
+1. **Storage → product-media**, create a folder named exactly after the
+   product's slug (`select slug, name from products` for the current list).
+2. Upload photos inside named to sort in the order you want --
+   `01.jpg`, `02.jpg`, etc. The first one becomes the cover image.
+3. Run the sync script to match folders to products:
    ```bash
    node --env-file=.env.local scripts/sync-product-media.mjs
    ```
-   This replaces each matched product's `product_media` rows with the
-   current folder contents -- safe to re-run after adding or swapping
-   photos later. A folder whose name doesn't match any product's slug is
-   skipped and reported, not silently ignored.
+   Replaces that product's `product_media` rows with the folder's current
+   contents -- safe to re-run after adding or swapping photos. A folder
+   whose name doesn't match any product's slug is skipped and reported,
+   not silently ignored.
 
 Until a product has at least one photo, the catalog shows a brand-gradient
 placeholder with the product's initial instead of a broken image -- nothing
