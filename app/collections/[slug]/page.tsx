@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
 import CurrencyToggle from '@/components/CurrencyToggle';
 import AddToBag from '@/components/AddToBag';
 import ProductGallery from '@/components/ProductGallery';
@@ -10,13 +11,16 @@ import { getCurrency } from '@/app/actions/currency';
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  if (!hasSupabaseConfig()) return { title: 'Collections | Roses N Chic' };
+  if (!hasSupabaseConfig()) return { title: 'Collections' };
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) return { title: 'Collections | Roses N Chic' };
+  if (!product) return { title: 'Collections' };
   return {
-    title: `${product.name} | Roses N Chic`,
-    description: product.description ?? undefined,
+    title: product.name,
+    description: product.description ?? `${product.name} — handloom ${product.fabric}, cut and stitched by hand in our Chennai atelier.`,
+    openGraph: product.product_media[0]?.image_url
+      ? { images: [{ url: product.product_media[0].image_url }] }
+      : undefined,
   };
 }
 
@@ -83,6 +87,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <AddToBag product={product} />
         </div>
       </main>
+      <Footer />
     </>
   );
 }

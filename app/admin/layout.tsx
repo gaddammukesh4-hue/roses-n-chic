@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <nav className="flex gap-6 text-body-sm">
           <Link href="/admin/products" className="hover:text-secondary transition-colors duration-base">Products</Link>
           <Link href="/admin/orders" className="hover:text-secondary transition-colors duration-base">Orders</Link>
+          <Link href="/admin/analytics" className="hover:text-secondary transition-colors duration-base">Analytics</Link>
         </nav>
         <Link href="/" className="ml-auto text-body-sm text-muted-foreground hover:text-primary transition-colors duration-base">
           Back to site

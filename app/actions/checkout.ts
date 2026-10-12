@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getRazorpayClient } from '@/lib/razorpay';
 import { getCart } from '@/app/actions/cart';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export type CreateOrderResult =
   | { error: string }
@@ -23,6 +24,9 @@ export async function createOrder(): Promise<CreateOrderResult> {
   const supabase = await createClient();
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) return { error: 'Sign in to check out.' };
+
+  const allowed = await checkRateLimit('checkout', 20, 60 * 60);
+  if (!allowed) return { error: 'Too many checkout attempts. Try again later.' };
 
   const items = await getCart();
   if (items.length === 0) return { error: 'Your bag is empty.' };

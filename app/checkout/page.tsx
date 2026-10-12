@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import CheckoutCart from '@/components/CheckoutCart';
+
+export const metadata: Metadata = {
+  title: 'Checkout',
+  robots: { index: false, follow: false },
+};
 
 /**
  * Order review only -- no payment yet. Creating an order and taking payment

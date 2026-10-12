@@ -18,7 +18,9 @@ Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 | 6 Accounts | **Done** (email/password). Verified live: sign up, sign in, measurements save/remove, sign out, RLS. Google sign-in deferred -- needs your Google Cloud OAuth credentials. |
 | 7 Cart and checkout | **Done** (Razorpay/INR). Order creation, signature verification, atomic stock decrement, and webhook all verified live. Stripe/USD not started. |
 | 8 Admin panel | **Done.** Products (create/edit/stock/photos/reel), orders (status/tracking), audit log -- all verified live. |
-| 9 to 12 | Not started. |
+| 9 Marketing, SEO, content | **Built, not fully live.** Footer, /atelier, 4 policy pages (drafts -- need legal review before launch), sitemap.xml, robots.txt, OG/share images, newsletter + privacy-respecting analytics. New DB tables not yet pushed to `rnc-dev` -- needs a fresh Supabase CLI token or a manual SQL Editor paste. |
+| 10 Security review | **Started.** Rate limiting, CSP/HSTS/security headers, Dependabot config, git-history secret scan (clean) all done. Still open: ZAP against staging (no Vercel link yet), formal OWASP pass on the new Phase 9 code, `npm audit` eslint-config-next finding. |
+| 11 to 12 | Not started. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
 

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
 import MeasurementForm from '@/components/MeasurementForm';
 import DeleteMeasurementButton from '@/components/DeleteMeasurementButton';
 import { createClient } from '@/lib/supabase/server';
 import { hasSupabaseConfig, formatPrice } from '@/lib/catalog';
 
-export const metadata: Metadata = { title: 'Account | Roses N Chic' };
+export const metadata: Metadata = { title: 'Account', robots: { index: false, follow: false } };
 
 type Measurement = {
   id: string;
@@ -113,6 +114,7 @@ export default async function AccountPage() {
           </div>
         )}
       </main>
+      <Footer />
     </>
   );
 }

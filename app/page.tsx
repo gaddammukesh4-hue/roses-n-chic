@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Nav from '@/components/Nav';
 import HeroScrub from '@/components/HeroScrub';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
           </Link>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

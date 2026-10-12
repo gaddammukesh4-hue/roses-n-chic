@@ -33,5 +33,5 @@
   :root { --nav-h: 60px; }
   .nav { font-size: 11px; }
   .nav__logo { font-size: 25px; }
-  .nav__links, .nav__search, .nav__tools a:nth-child(2) { display: none; }
+  .nav__links, .nav__tools a:nth-child(2) { display: none; }
 }

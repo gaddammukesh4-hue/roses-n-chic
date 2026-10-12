@@ -20,10 +20,8 @@ export default async function Nav() {
       <nav className="nav__links" aria-label="Main">
         <Link href="/collections">Collections</Link>
         <Link href="/atelier">Atelier</Link>
-        <Link href="/journal">Journal</Link>
       </nav>
       <div className="nav__tools">
-        <Link href="/search" className="nav__search">Search</Link>
         <AuthControl signedIn={signedIn} />
         <CartControl currency={currency} />
       </div>

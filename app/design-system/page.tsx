@@ -1,3 +1,10 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Design system',
+  robots: { index: false, follow: false },
+};
+
 const colorTokens = [
   { name: 'background', css: 'bg-background border border-border', hex: '#FBF5EE', label: 'Ivory' },
   { name: 'card', css: 'bg-card border border-border', hex: '#FFFFFF', label: 'White' },

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 import type { AuthState } from '@/lib/auth-types';
 
@@ -9,6 +10,10 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
   if (!email || !password) return { status: 'error', message: 'Enter your email and password.' };
+
+  // plan.md Part C: rate limit sign-in attempts (brute-force protection).
+  const allowed = await checkRateLimit('signin', 10, 5 * 60);
+  if (!allowed) return { status: 'error', message: 'Too many attempts. Try again in a few minutes.' };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -25,6 +30,9 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   const phone = String(formData.get('phone') ?? '').trim();
   if (!email || !password) return { status: 'error', message: 'Enter your email and password.' };
   if (password.length < 8) return { status: 'error', message: 'Password must be at least 8 characters.' };
+
+  const allowed = await checkRateLimit('signup', 5, 60 * 60);
+  if (!allowed) return { status: 'error', message: 'Too many attempts. Try again later.' };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -47,6 +55,9 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
 export async function requestPasswordReset(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get('email') ?? '').trim();
   if (!email) return { status: 'error', message: 'Enter your email.' };
+
+  const allowed = await checkRateLimit('password-reset', 3, 60 * 60);
+  if (!allowed) return { status: 'error', message: 'Too many attempts. Try again later.' };
 
   const supabase = await createClient();
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ProductFilters from '@/components/ProductFilters';
 import CurrencyToggle from '@/components/CurrencyToggle';
@@ -7,7 +8,7 @@ import { getProducts, hasSupabaseConfig, type Fabric, type Size, type CatalogFil
 import { getCurrency } from '@/app/actions/currency';
 
 export const metadata: Metadata = {
-  title: 'Collections | Roses N Chic',
+  title: 'Collections',
   description: "Handcrafted handloom cotton and viscose rayon women's clothing from our Chennai atelier.",
 };
 
@@ -66,6 +67,7 @@ export default async function CollectionsPage({ searchParams }: { searchParams: 
           </>
         )}
       </main>
+      <Footer />
     </>
   );
 }
