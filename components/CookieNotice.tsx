@@ -37,7 +37,7 @@ export default function CookieNotice() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-border bg-card px-6 py-4 shadow-lg">
+    <div role="region" aria-label="Cookie notice" className="fixed inset-x-0 bottom-0 z-[70] border-t border-border bg-card px-6 py-4 shadow-lg">
       <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-4">
         <p className="text-body-sm text-muted-foreground max-w-2xl">
           We use cookies to keep you signed in and remember your bag — no advertising or
