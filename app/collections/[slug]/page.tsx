@@ -49,7 +49,11 @@ export default async function ProductPage({ params }: { params: Params }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {/* JSON.stringify doesn't escape "<" or "/" -- a product name/description
+          (admin-set, but still worth defending) containing "</script>" would
+          otherwise break out of this tag. < keeps the JSON value
+          identical while making that impossible. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <Nav />
       <main className="pt-[calc(var(--nav-h,76px)+40px)] pb-24 px-6 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         <ProductGallery media={product.product_media} productName={product.name} />
