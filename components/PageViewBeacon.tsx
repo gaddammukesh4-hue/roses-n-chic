@@ -2,11 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { logPageView } from '@/app/actions/analytics';
 
-/** Logs one page_views row per route change, site-wide (mounted once in
- * app/layout.tsx). No cookie, no visitor ID, no IP/user-agent capture --
- * see supabase/migrations/20261012000009_marketing.sql. */
+/** Logs one page_view per route change, site-wide (mounted once in
+ * app/layout.tsx), via POST to a Route Handler rather than a plain Server
+ * Action -- see app/api/track-view/route.ts for why. Fire-and-forget:
+ * a logging failure must not break navigation. */
 export default function PageViewBeacon() {
   const pathname = usePathname();
   const lastLogged = useRef<string | null>(null);
@@ -14,7 +14,12 @@ export default function PageViewBeacon() {
   useEffect(() => {
     if (!pathname || lastLogged.current === pathname) return;
     lastLogged.current = pathname;
-    logPageView(pathname, document.referrer || null).catch(() => {});
+    fetch('/api/track-view', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: pathname, referrer: document.referrer || null }),
+    }).catch(() => {});
   }, [pathname]);
 
   return null;

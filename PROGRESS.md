@@ -50,22 +50,27 @@ Update this file at the end of every phase.
   a dismissible informational banner (not a blocking consent gate, since
   no non-essential cookies are used) in the root layout. Migration
   20261012000012 adds `page_views.user_id` (nullable, set null on user
-  delete); app/actions/analytics.ts's `logPageView` now records the
-  signed-in user's id from the server session (never client input, so it
-  can't be spoofed); /admin/analytics has a new "Who viewed what" table
-  (customer name/email + page + timestamp, signed-in visits only).
-  **Known unresolved oddity**: local dev server (`next start` on
-  Windows/localhost) did not reliably show the auth cookie reaching this
-  specific server action in Playwright testing, even though the exact
-  same cookie was confirmed present in the browser and other direct
-  (non-form) server actions in this app (e.g. signOut) demonstrably do see
-  it. Spent real effort tracing this (raw cookie dump inside the action
-  itself came back empty) without finding a root cause -- most likely a
-  localhost/dual-stack or Next.js dev-server quirk rather than an app bug,
-  but not confirmed either way. Shipped anyway and verified directly
-  against the LIVE Vercel deployment instead of localhost, since that's
-  what actually matters; if it's ever reported as not working in
-  production specifically (not just local dev), revisit this.
+  delete); the signed-in user's id is recorded from the server session
+  (never client input, so it can't be spoofed); /admin/analytics has a
+  new "Who viewed what" table (customer name/email + page + timestamp,
+  signed-in visits only).
+
+  Implementation note: page-view logging is a Route Handler
+  (app/api/track-view/route.ts) called via an explicit fetch() from
+  components/PageViewBeacon.tsx, not a plain Server Action -- initially
+  built as a Server Action, but chasing a real-looking "the cookie never
+  reaches this action" symptom during testing (confirmed with a raw
+  cookie dump inside the action -- genuinely empty) burned a lot of time
+  before the actual root cause turned up: my own test script's
+  `getByRole('link', { name: 'Account' })` locator was ambiguous (Footer
+  also has an Account link, always present regardless of auth state), so
+  `waitFor()` wasn't reliably waiting for sign-in to actually finish
+  before the test navigated onward -- not a Next.js or app bug at all.
+  Confirmed this by re-testing with the locator properly scoped to
+  `header.nav`, which passed cleanly. Kept the Route Handler anyway since
+  it already works and gives this one frequently-firing beacon explicit
+  control over its own request rather than relying on Next's Server
+  Action dispatch -- a reasonable choice either way, not a required fix.
 
 - 2026-10-13: Google sign-in (Phase 6, previously deferred) -- **done and
   verified live.** components/AuthDrawer.tsx has a "Continue with Google"
