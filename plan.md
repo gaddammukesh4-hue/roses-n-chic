@@ -5,23 +5,23 @@ Luxury women's clothing e-commerce site. Self-hosted. No Shopify.
 Stack: Next.js, Tailwind CSS, GSAP, Lenis, Supabase, Razorpay, Stripe, Vercel.
 
 
-## Status (updated 12 October 2026)
+## Status (updated 14 October 2026)
 
 | Phase | Status |
 |---|---|
-| 0 Set up | **Done except Stripe.** GitHub, Supabase `rnc-dev`, and Vercel all linked. Live at https://roses-n-chic.vercel.app. Razorpay test keys in place; Stripe still not started. |
+| 0 Set up | **Done except Stripe.** GitHub, Supabase `rnc-dev`, and Vercel all linked. Live at https://roses-n-chic.vercel.app, auto-deploys on push to `main`. Razorpay test keys in place; Stripe not started. Razorpay webhook still needs registering in the Razorpay dashboard (user action). |
 | 1 Brand and design system | **Done.** Formalized in `DESIGN.md` and `app/globals.css`. Live demo at `/design-system`. |
 | 2 Hero video assets | **Done.** 211 frames and a cut-out image are in `hero/standalone/frames/`. |
-| 3 Hero scroll animation | **Done.** Integrated into the live Next.js app, verified headlessly at 1440x810 and 390x844. |
-| 4 Database | **Done.** Applied to the live `rnc-dev` project, seeded, RLS verified independently via the anon key. |
-| 5 Catalog and product pages | **Done.** Verified against real data. Reel/video and Custom Tailored deliberately deferred (no media yet, needs Phase 6 auth). |
-| 6 Accounts | **Done** (email/password). Verified live: sign up, sign in, measurements save/remove, sign out, RLS. Google sign-in deferred -- needs your Google Cloud OAuth credentials. |
-| 7 Cart and checkout | **Done** (Razorpay/INR). Order creation, signature verification, atomic stock decrement, and webhook all verified live. Stripe/USD not started. |
-| 8 Admin panel | **Done.** Products (create/edit/stock/photos/reel), orders (status/tracking), audit log -- all verified live. |
-| 9 Marketing, SEO, content | **Built, not fully live.** Footer, /atelier, 4 policy pages (drafts -- need legal review before launch), sitemap.xml, robots.txt, OG/share images, newsletter + privacy-respecting analytics. New DB tables not yet pushed to `rnc-dev` -- needs a fresh Supabase CLI token or a manual SQL Editor paste. |
-| 10 Security review | **Started.** Rate limiting (verified live against real RLS policies), CSP/HSTS/security headers, Dependabot config, git-history secret scan (clean), OWASP self-review of Phase 9 code all done. `npm audit` eslint-config-next finding closed as an accepted dev-only risk (no safe fix available). Still open: ZAP against staging (no Vercel link yet). |
-| 11 Quality and speed | **Started**, scoped to Phase 9's pages so far. Lighthouse 100/100/100/100 (performance/accessibility/best-practices/SEO) on home, /atelier, /collections, and all 4 policy pages -- found and fixed 3 real bugs along the way (a contrast failure, focusable content behind aria-hidden in both drawers, color-only/missing links). Still open: full Playwright checkout re-run, real-device/slow-network pass, manual screen-reader pass. |
-| 12 | Not started. |
+| 3 Hero scroll animation | **Done.** Integrated into the live Next.js app, verified headlessly at 1440x810 and 390x844. A new "needle stitching" prepend scene was requested -- blocked on the user generating that footage (not something this agent can create). |
+| 4 Database | **Done.** 12 migrations applied to the live `rnc-dev` project. RLS verified independently via the anon key. |
+| 5 Catalog and product pages | **Done.** Verified against real data. Reel/video upload and Custom Tailored sizing both now live (see Phase 6/8). |
+| 6 Accounts | **Done.** Email/password and Google sign-in both verified live (Google OAuth client set up by the user, provider enabled via Supabase's Management API). Guest-cart merge works. |
+| 7 Cart and checkout | **Done** (Razorpay/INR). Order creation, signature verification, atomic stock decrement, webhook, and shipping-address collection (added 2026-10-13 after a gap was found -- nothing collected an address before) all verified live. Stripe/USD not started. |
+| 8 Admin panel | **Done.** Products (create/edit/stock/photos/**video upload**), orders (status/tracking/**full customer + shipping details**), audit log, visible Admin nav link -- all verified live. Creating a product now redirects straight to its edit page. |
+| 9 Marketing, SEO, content | **Done and live.** Footer, /atelier, 4 policy pages (returns' refund terms are lawyer-reviewed; the other three are still drafts needing the same review), sitemap.xml, robots.txt, OG/share images, newsletter, privacy-respecting analytics (now includes per-visitor "who viewed what" for signed-in users, disclosed in a rewritten privacy policy), and a cookie notice. All DB tables pushed and verified live. |
+| 10 Security review | **Started.** Rate limiting (verified live), CSP/HSTS/security headers, Dependabot config, git-history secret scan (clean), OWASP self-review all done. `npm audit` eslint-config-next finding closed as an accepted dev-only risk. Still open: ZAP against the now-live staging/production site. |
+| 11 Quality and speed | **Started**, scoped to the pages touched so far. Lighthouse 100/100/100/100 on every page tested -- found and fixed 4 real bugs along the way (a contrast failure, focusable content behind aria-hidden, color-only/missing links, and a page-view-tracking bug mistakenly suspected to be a Next.js cookie issue but actually a test-script locator bug). Still open: full Playwright checkout re-run, real-device/slow-network pass, manual screen-reader pass. |
+| 12 Launch | Not started. Custom domain and Razorpay KYC are intentionally deferred per the user's own request -- revisit once everything above is done. |
 
 Read `hero/README.md` before Phase 3. Keep `PROGRESS.md` up to date after each phase.
 
